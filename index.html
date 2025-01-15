@@ -342,6 +342,50 @@
         background: #3b82f6;
         transform: translateY(-2px);
     }
+    /* Floating Buttons */
+.floating-buttons {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.floating-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.whatsapp-btn {
+    background: #25d366;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.whatsapp-btn:hover {
+    background: #20b958;
+    transform: translateY(-5px);
+}
+
+.call-btn {
+    background: #2563eb;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.call-btn:hover {
+    background: #1e40af;
+    transform: translateY(-5px);
+}
+
     </style>
 </head>
 <body>
@@ -497,6 +541,16 @@
             </div>
         </div>
     </section>
+    <!-- Floating Buttons -->
+<div class="floating-buttons">
+    <a href="https://wa.me/1234567890" target="_blank" class="floating-btn whatsapp-btn" title="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+    <a href="tel:+1234567890" class="floating-btn call-btn" title="Call Us">
+        <i class="fas fa-phone"></i>
+    </a>
+</div>
+
 
     <!-- Scroll to Top Button -->
     <div class="scroll-to-top">
