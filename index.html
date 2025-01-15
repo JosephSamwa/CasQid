@@ -215,6 +215,133 @@
             background: var(--secondary-color);
             transform: translateY(-5px);
         }
+    .footer {
+        background: linear-gradient(45deg, #1e40af, #2563eb);
+        color: white;
+        padding: 4rem 0 2rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .footer::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.1;
+    }
+
+    .footer-heading {
+        color: var(--accent-color);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        font-size: 1.2rem;
+    }
+
+    .footer-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .footer-links li {
+        margin-bottom: 0.75rem;
+    }
+
+    .footer-links a {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .footer-links a:hover {
+        color: white;
+        transform: translateX(5px);
+    }
+
+    .footer-social-links {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .footer-social-links a {
+        background: rgba(255, 255, 255, 0.1);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .footer-social-links a:hover {
+        background: var(--accent-color);
+        transform: translateY(-3px);
+    }
+
+    .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 2rem;
+        margin-top: 3rem;
+        text-align: center;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .footer-contact-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .footer-contact-info i {
+        margin-right: 10px;
+        color: var(--accent-color);
+    }
+
+    .newsletter-input {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        padding: 0.5rem 1rem;
+        color: white;
+        margin-right: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .newsletter-input:focus {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: var(--accent-color);
+        outline: none;
+    }
+
+    .newsletter-input::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .newsletter-button {
+        background: var(--accent-color);
+        border: none;
+        border-radius: 5px;
+        padding: 0.5rem 1.5rem;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .newsletter-button:hover {
+        background: #3b82f6;
+        transform: translateY(-2px);
+    }
     </style>
 </head>
 <body>
@@ -375,7 +502,85 @@
     <div class="scroll-to-top">
         <i class="fas fa-arrow-up"></i>
     </div>
+<!-- Footer Section -->
 
+
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <!-- Company Info -->
+            <div class="col-lg-4 mb-4">
+                <h3 class="footer-heading">TravelWithMaalim</h3>
+                <p class="mb-4">Your trusted partner for premium travel experiences, visa services, and unforgettable journeys across the globe.</p>
+                <div class="footer-social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-lg-2 col-md-6 mb-4">
+                <h3 class="footer-heading">Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+
+            <!-- Services -->
+            <div class="col-lg-2 col-md-6 mb-4">
+                <h3 class="footer-heading">Services</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Visa Services</a></li>
+                    <li><a href="#">Air Ticketing</a></li>
+                    <li><a href="#">Umrah Packages</a></li>
+                    <li><a href="#">Travel Insurance</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="col-lg-4 mb-4">
+                <h3 class="footer-heading">Contact Us</h3>
+                <div class="footer-contact-info">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>123 Travel Street, Dubai, UAE</span>
+                </div>
+                <div class="footer-contact-info">
+                    <i class="fas fa-phone"></i>
+                    <span>+971 50 123 4567</span>
+                </div>
+                <div class="footer-contact-info">
+                    <i class="fas fa-envelope"></i>
+                    <span>info@travelwithmaalim.com</span>
+                </div>
+                
+                <!-- Newsletter -->
+                <div class="mt-4">
+                    <h3 class="footer-heading">Newsletter</h3>
+                    <div class="d-flex">
+                        <input type="email" class="newsletter-input" placeholder="Your email">
+                        <button class="newsletter-button">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <div class="row">
+                <div class="col-12">
+                    <p>&copy; 2025 TravelWithMaalim. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
