@@ -315,6 +315,8 @@
         
         .content-wrapper {
             flex: 1;
+            width: 100%; /* Add this to ensure full width */
+            max-width: 100%; /* Prevent overflow issues */
         }
         
         footer {
@@ -636,27 +638,32 @@
         <a href="tel:+254722201510" class="floating-btn call-btn" title="Call Us">
             <i class="fas fa-phone"></i>
         </a>
-    </div>
-     <!-- Bottom Banner (same as before) -->
-    <div class="banner-container">
-        <div class="banner expanded" id="banner">
-            <div class="banner-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M17 12h-5v5h5v-5zM16 1v2h-4V1H8v2H6c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-2V1h-2zm3 18H6V8h12v11z"/>
-                </svg>
+   
+        <!-- Bottom Banner (same as before) -->
+        <div class="banner-container">
+            <a href="{% url 'book_appointment' %}" style="text-decoration: none;">
+            <div class="banner expanded" id="banner">
+                <div class="banner-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M17 12h-5v5h5v-5zM16 1v2h-4V1H8v2H6c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-2V1h-2zm3 18H6V8h12v11z"/>
+                    </svg>
+                </div>
+                <div class="banner-text">Book an Appointment</div>
             </div>
-            <div class="banner-text">Book an Appointment</div>
+            </a>
         </div>
-    </div>
+     </div>
 
-    <!-- New Top Banner -->
-      <div class="top-banner-container" id="topBannerContainer">
-            <div class="top-banner" id="topBanner">
-                <span class="top-banner-icon">�</span>
+     <!-- New Top Banner -->
+    <div class="top-banner-container" id="topBannerContainer">
+        <div class="top-banner" id="topBanner">
+            <i class="fas fa-bullhorn top-banner-icon"></i>
+            <a href="{% url 'book_appointment' %}" class="text-white text-decoration-none">
                 <span>Book your appointment today! Our travel specialists are ready to assist you</span>
-                <button class="close-btn" id="closeBtn">×</button>
-            </div>
+            </a>
+            <button class="close-btn" id="closeBtn" aria-label="Close banner">×</button>
         </div>
+    </div>
     <!-- Feedback Button -->
     <button type="button" class="feedback-btn" data-bs-toggle="modal" data-bs-target="#feedbackModal">
         <i class="fas fa-comment-dots me-2"></i>Share Your Feedback
