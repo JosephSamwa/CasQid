@@ -1,0 +1,493 @@
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initiate Payment-{{ user.username }}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+          :root {
+            --mpesa-green: #00a651;
+            --mpesa-dark: #1a1a1a;
+            --background-light: #f8f9fa;
+            --text-color: #333;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        body {
+            background-color: #f0f4f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        
+
+        .containerA {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        #messages-container {
+            margin-bottom: 2rem;
+        }
+        .messages {
+            list-style: none;
+            padding: 0;
+        }
+        .message {
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .message:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+        }
+        .message.success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-left: 5px solid #34d399;
+        }
+        .message.error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-left: 5px solid #f87171;
+        }
+        .message.warning {
+            background-color: #fef3c7;
+            color: #92400e;
+            border-left: 5px solid #fbbf24;
+        }
+        .message.info {
+            background-color: #e0f2fe;
+            color: #075985;
+            border-left: 5px solid #38bdf8;
+        }
+        .message-icon {
+            margin-right: 1rem;
+            font-size: 1.25rem;
+        }
+        .message-content {
+            flex-grow: 1;
+        }
+        .message-close {
+            cursor: pointer;
+            font-size: 1.25rem;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+        .message-close:hover {
+            opacity: 1;
+        }
+        .BB{
+            display: flex;
+            justify-content: space-between;
+        }
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 {
+            color: var(--mpesa-green);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .logo {
+            width: 150px;
+            margin-bottom: 1.5rem;
+        }
+
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px -1px rgba(0, 0, 0, 0.15);
+        }
+
+        .step-number {
+            background-color: var(--mpesa-green);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex-grow: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: var(--mpesa-dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .step-description {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .step-icon {
+            color: var(--mpesa-green);
+            font-size: 1.5rem;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .note-card {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin-top: 2rem;
+            border-radius: 8px;
+        }
+        .note-cardA {
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin-top: 2rem;
+            border-radius: 8px;
+        }
+
+        .note-card h3 {
+            color: #856404;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .note-card p {
+            color: #856404;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .step-card {
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .step-number {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+        }
+        .status-badge1 {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 1.85rem;
+            margin-top: 1rem;
+            background-color: #e5e7eb;
+            color: #155fd4;
+        }
+      
+        .containerC {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #008000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #006400;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #result {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #333;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+        }
+
+        .last-update {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 1rem;
+        }
+
+        .error {
+            color: #ff0000;
+            text-align: center;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="containerA" id="containerA">
+        <div id="messages-container">
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li class="message {{ message.tags }}" style="animation: slideInDown 0.5s ease-out;">
+                    <span class="message-icon">
+                        {% if message.tags == 'success' %}✅
+                        {% elif message.tags == 'error' %}❌
+                        {% elif message.tags == 'warning' %}⚠️
+                        {% else %}ℹ️{% endif %}
+                    </span>
+                    <span class="message-content">{{ message }}</span>
+                    <span class="message-close" onclick="this.parentElement.style.animation='fadeOut 0.5s forwards';">&times;</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        <div class="BB">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Initiate Payment</h2>
+        <a href="{% url 'dashboard' %}" class="block p-3 text-gray-700 hover:bg-blue-50 rounded-lg transition duration-300 ease-in-out hover-scale">Back to Dashboard</a>
+        </div>
+        
+ 
+        <div class="header">
+            <h1>M-Pesa Payment Guide</h1>
+            <p>Follow these simple steps to make payments via M-Pesa</p>
+        </div>
+        <form method="post" action="">
+            {% csrf_token %}
+   
+        <div class="steps-container">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-title">Access M-Pesa Menu</div>
+                    <div class="step-description">Go to the M-Pesa menu on your mobile phone</div>
+                </div>
+                <div class="step-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-title">Select Lipa Na Mpesa</div>
+                    <div class="step-description">Choose the "Paybill" option from the menu</div>
+                </div>
+                <div class="step-icon">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-title">Enter Paybill Number</div>
+                    <div class="status-badge1">542542</div>
+                </div>
+                <div class="step-icon">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                </div>
+            </div>
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <div class="step-title">Enter Account Number</div>
+                    <div class="status-badge1">201510</div>
+                </div>
+                <div class="step-icon">
+                    <i class="fas fa-id-card"></i>
+                </div>
+            </div>
+            
+            <div class="step-card">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <div class="step-title">Enter Amount</div>
+                    <div class="status-badge1" id="amountG">{{ formatted_commission_fee }}</div>
+                </div>
+                <div class="step-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">6</div>
+                <div class="step-content">
+                    <div class="step-title">Confirm Details</div>
+                    <div class="step-description">Press "OK" to proceed with the transaction</div>
+                </div>
+                <div class="step-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">7</div>
+                <div class="step-content">
+                    <div class="step-title">Enter PIN</div>
+                    <div class="step-description">Input your M-Pesa PIN securely</div>
+                </div>
+                <div class="step-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">8</div>
+                <div class="step-content">
+                    <div class="step-title">Complete Transaction</div>
+                    <div class="step-description">Review the details and press "Send" to complete</div>
+                </div>
+                <div class="step-icon">
+                    <i class="fas fa-check-double"></i>
+                </div>
+            </div>
+        </div>
+        <div class="note-cardA">
+            <button type="submit" id="confirm" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Confirm Paymeent
+            </button>
+        </div>
+        </form>
+        <div class="note-card">
+            <h3><i class="fas fa-info-circle"></i> Important Note</h3>
+            <p>Always ensure you've entered the correct phone number and amount before confirming the transaction. Keep your PIN private and never share it with anyone.</p>
+        </div>
+    </div>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    // DOM Elements
+    const messagesContainer = document.getElementById('messages-container');
+
+    // Clear Messages After Timeout
+    if (messagesContainer.querySelector('.messages')) {
+        setTimeout(function () {
+            const messages = messagesContainer.querySelectorAll('.message');
+            messages.forEach((message) => {
+                message.style.animation = 'fadeOut 0.5s forwards';
+            });
+            setTimeout(() => {
+                messagesContainer.innerHTML = '';
+            }, 500);
+        }, 5000);
+    }
+
+});
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,286 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Jobs - CasQid Travels{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Brand colors from base template */
+    :root {
+        --primary-color: #C21CC2;
+        --secondary-color: #007A8A;
+        --text-gray: #808080;
+        --text-color: #4A4A4A;
+    }
+
+    .jobs-hero {
+        background: linear-gradient(rgba(0, 122, 138, 0.9), rgba(194, 28, 194, 0.8)),
+                    url('{% static "images/joboffers.png" %}') center/cover;
+        padding: 6rem 0;
+        color: white;
+        margin-top: -3rem;
+    }
+
+    .search-box {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        margin-top: -2rem;
+        position: relative;
+        z-index: 10;
+    }
+
+    .filter-card {
+        background: white;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .filter-btn {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        border-radius: 2rem;
+        padding: 0.75rem 2rem;
+        transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(194, 28, 194, 0.2);
+        color: white;
+    }
+
+    .job-card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+
+    .job-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .country-flag {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--primary-color);
+    }
+
+    .badge-remote {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border-radius: 2rem;
+        font-weight: 500;
+    }
+
+    .salary-text {
+        color: var(--secondary-color);
+        font-weight: 600;
+    }
+
+    .company-name {
+        color: var(--text-color);
+        font-weight: 500;
+    }
+
+    .pagination .page-link {
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border-color: transparent;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(194, 28, 194, 0.15);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="jobs-hero">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">Find Your Dream Job</h1>
+        <p class="lead mb-0">Explore international career opportunities with CasQid Travels</p>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Search Box -->
+    <div class="search-box p-4 mb-5">
+        <form method="get" class="row g-3">
+            <!-- Main Search Fields -->
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-end-0">
+                        <i class="fas fa-search text-muted"></i>
+                    </span>
+                    <input type="text" name="search" class="form-control border-start-0" 
+                           placeholder="Search jobs..." value="{{ current_filters.search }}">
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <select name="country" class="form-select">
+                    <option value="">All Countries</option>
+                    {% for country in countries %}
+                        <option value="{{ country.name }}" {% if country == current_filters.country %}selected{% endif %}>
+                            {{ country.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <button type="button" class="btn w-100 filter-btn" data-bs-toggle="collapse" data-bs-target="#advancedFilters">
+                    <i class="fas fa-sliders-h me-2"></i>Advanced Filters
+                </button>
+            </div>
+
+            <!-- Advanced Filters -->
+            <div class="collapse" id="advancedFilters">
+                <div class="row g-3 mt-2">
+                    <div class="col-md-3">
+                        <select name="job_type" class="form-select">
+                            <option value="">All Job Types</option>
+                            {% for value, label in job_types %}
+                                <option value="{{ value }}"
+                                        {% if value == current_filters.job_type %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <select name="experience_level" class="form-select">
+                            <option value="">Any Experience</option>
+                            {% for value, label in experience_levels %}
+                                <option value="{{ value }}"
+                                        {% if value == current_filters.experience_level %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="form-check form-switch">
+                            <input type="checkbox" name="remote_friendly" 
+                                   class="form-check-input" id="remoteCheck"
+                                   {% if current_filters.remote_friendly %}checked{% endif %}>
+                            <label class="form-check-label" for="remoteCheck">
+                                Remote Work
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Section -->
+    <div class="row g-4">
+        {% for job in jobs %}
+        <div class="col-md-6 col-lg-4">
+            <div class="job-card card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center">
+                            <img src="{{ job.country.flag_url }}" 
+                                 alt="{{ job.country.name }}" 
+                                 class="me-2" 
+                                 style="width: 24px; height: 16px; object-fit: cover;">
+                            <span class="text-muted">{{ job.country.name }}</span>
+                        </div>
+                        {% if job.remote_friendly %}
+                            <span class="badge badge-remote">Remote</span>
+                        {% endif %}
+                    </div>
+
+                    <h5 class="card-title mb-3">{{ job.title }}</h5>
+                    <p class="salary-text mb-2">{{ job.country.currency_code }}{{ job.min_salary }} per hour</p>
+                    <p class="text-muted mb-3">{{ job.company }}</p>
+                    
+                    <div class="d-flex gap-2 mb-3">
+                        <span class="badge bg-light text-dark">{{ job.job_type }}</span>
+                        <span class="badge bg-light text-dark">{{ job.experience_level }}</span>
+                        <span class="badge bg-light text-dark">{{ job.working_hours }}</span>
+                    </div>
+
+                    <a href="{% url 'job_detail' job.pk %}" class="btn btn-outline-primary w-100">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <h3>No jobs found</h3>
+            <p class="text-muted">Try adjusting your search criteria</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1">&laquo; First</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+
+            <li class="page-item active">
+                <span class="page-link">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Sort functionality
+    const sortSelect = document.getElementById('sort');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            this.closest('form').submit();
+        });
+    }
+</script>
+{% endblock %}

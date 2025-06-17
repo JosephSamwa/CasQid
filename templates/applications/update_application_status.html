@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Update Application Status{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Update Application Status</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {{ field|add_class:"form-control" }}
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% if field.errors %}
+                        <div class="invalid-feedback">
+                            {{ field.errors|join:", " }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save btn-icon"></i>Update Status
+            </button>
+            <a href="{% url 'admin_application_list' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left btn-icon"></i>Back to List
+            </a>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Application Details</h5>
+                <p><strong>Job:</strong> {{ application.job.title }}</p>
+                <p><strong>Applicant:</strong> {{ application.user.get_full_name }}</p>
+                <p><strong>Applied on:</strong> {{ application.applied_at|date:"F d, Y" }}</p>
+                <p><strong>Current Status:</strong> {{ application.get_status_display }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

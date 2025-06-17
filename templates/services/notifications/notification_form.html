@@ -1,0 +1,12 @@
+<!-- notifications/templates/notifications/notification_form.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% if form.instance.pk %}Edit{% else %}Create{% endif %} Notification</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="{% url 'notification_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

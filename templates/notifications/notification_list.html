@@ -1,0 +1,33 @@
+<!-- notifications/templates/notifications/notification_list.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Notifications</h1>
+
+<form method="get" class="mb-4">
+    {{ filter_form.as_p }}
+    <button type="submit" class="btn btn-primary">Filter</button>
+</form>
+
+{% if notifications %}
+    <div class="list-group">
+        {% for notification in notifications %}
+            <div class="list-group-item {% if not notification.is_read %}list-group-item-info{% endif %}">
+                <h5 class="mb-1">{{ notification.get_notification_type_display }} - {{ notification.get_notification_display }}</h5>
+                <p class="mb-1">{{ notification.message }}</p>
+                <small>{{ notification.date_sent }}</small>
+                {% if not notification.is_read %}
+                    <a href="{% url 'mark_notification_as_read' notification.pk %}" class="btn btn-sm btn-primary float-right">Mark as Read</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    {% include 'pagination.html' with page=page_obj %}
+{% else %}
+    <p>No notifications found.</p>
+{% endif %}
+
+{% if user.is_staff %}
+    <a href="{% url 'notification_create' %}" class="btn btn-primary mt-3">Create Notification</a>
+{% endif %}
+{% endblock %}

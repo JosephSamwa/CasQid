@@ -1,0 +1,336 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Apply - {{ job.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --color-primary-50: #eff6ff;
+        --color-primary-100: #dbeafe;
+        --color-primary-200: #bfdbfe;
+        --color-primary-300: #93c5fd;
+        --color-primary-400: #60a5fa;
+        --color-primary-500: #3b82f6;
+        --color-primary-600: #2563eb;
+        --color-primary-700: #1d4ed8;
+        --color-primary-800: #1e40af;
+        --color-primary-900: #1e3a8a;
+        
+        --color-surface-50: #f8fafc;
+        --color-surface-100: #f1f5f9;
+        --color-surface-200: #e2e8f0;
+        --color-surface-300: #cbd5e1;
+        --color-surface-400: #94a3b8;
+        --color-surface-500: #64748b;
+        --color-surface-600: #475569;
+        --color-surface-700: #334155;
+        --color-surface-800: #1e293b;
+        --color-surface-900: #0f172a;
+        
+        --font-family: 'Inter var', system-ui, -apple-system, sans-serif;
+        --font-size-sm: 0.875rem;
+        --font-size-base: 1rem;
+        --font-size-lg: 1.125rem;
+        --font-size-xl: 1.25rem;
+        --font-size-2xl: 1.5rem;
+        
+        --space-2: 0.5rem;
+        --space-4: 1rem;
+        --space-6: 1.5rem;
+        --space-8: 2rem;
+        --space-3: 0.75rem;
+        
+        --radius-md: 0.375rem;
+        --radius-lg: 0.5rem;
+        
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        
+        --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+        font-family: var(--font-family);
+        background-color: var(--color-surface-100);
+        color: var(--color-surface-900);
+    }
+
+    .profile-container {
+        max-width: 64rem;
+        margin: var(--space-8) auto;
+        padding: 0 var(--space-4);
+    }
+
+    .profile-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+    }
+
+    .profile-header {
+        background: linear-gradient(135deg, var(--color-primary-600), var(--color-primary-800));
+        padding: var(--space-6);
+        color: white;
+        text-align: center;
+    }
+
+    .profile-header h1 {
+        margin: 0;
+        font-size: var(--font-size-2xl);
+        font-weight: 700;
+    }
+
+    .profile-body {
+        padding: var(--space-6);
+    }
+
+    .form-group {
+        margin-bottom: var(--space-4);
+    }
+
+    .form-control, .form-select {
+        width: 100%;
+        padding: var(--space-3);
+        border: 2px solid var(--color-primary-300);
+        border-radius: var(--radius-lg);
+        font-size: var(--font-size-base);
+        transition: all var(--transition-base);
+        background-color: var(--color-surface-50);
+        color: var(--color-surface-900);
+    }
+
+    .form-control:focus, .form-select:focus {
+        outline: none;
+        border-color: var(--color-primary-500);
+        box-shadow: 0 0 0 3px var(--color-primary-100);
+        background-color: white;
+    }
+
+    .form-control:hover, .form-select:hover {
+        border-color: var(--color-primary-400);
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: var(--space-2);
+        font-weight: 500;
+        color: var(--color-surface-700);
+    }
+
+    .btn-primary {
+        background-color: var(--color-primary-600);
+        color: white;
+        padding: var(--space-2) var(--space-4);
+        border: none;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color var(--transition-base);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--color-primary-700);
+    }
+
+    .error-message {
+        color: #ef4444;
+        font-size: var(--font-size-sm);
+        margin-top: var(--space-2);
+    }
+
+    fieldset {
+        border: 1px solid var(--color-surface-300);
+        border-radius: var(--radius-md);
+        padding: var(--space-4);
+        margin-bottom: var(--space-6);
+    }
+
+    legend {
+        font-weight: 600;
+        font-size: var(--font-size-lg);
+        color: var(--color-primary-700);
+        padding: 0 var(--space-2);
+        text-align: center;
+    }
+
+    .job-details-card {
+        background: var(--color-surface-50);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4);
+        box-shadow: var(--shadow-sm);
+    }
+
+    @media (max-width: 768px) {
+        .profile-container {
+            padding: 0 var(--space-2);
+        }
+
+        .profile-header {
+            padding: var(--space-4);
+        }
+
+        .profile-body {
+            padding: var(--space-4);
+        }
+
+        fieldset {
+            padding: var(--space-2);
+        }
+    }
+
+    .application-hero {
+        background: linear-gradient(rgba(0, 122, 138, 0.9), rgba(194, 28, 194, 0.8));
+        padding: 4rem 0;
+        color: white;
+        margin-top: -3rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .form-text {
+        font-size: 0.875rem;
+        color: var(--text-gray);
+    }
+
+    .upload-box {
+        border: 2px dashed var(--primary-color);
+        border-radius: 1rem;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .upload-box:hover {
+        background: rgba(194, 28, 194, 0.05);
+    }
+
+    .submit-btn {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(194, 28, 194, 0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="application-hero mb-5">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">Submit Application</h1>
+        <p class="lead mb-0">{{ job.title }} at {{ job.company }}</p>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        {% for field in form %}
+                            <div class="mb-4">
+                                <label for="{{ field.id_for_label }}" class="form-label">
+                                    {{ field.label }}
+                                </label>
+                                
+                                <div class="upload-box mb-2">
+                                    {{ field }}
+                                </div>
+                                
+                                {% if field.help_text %}
+                                    <div class="form-text">{{ field.help_text }}</div>
+                                {% endif %}
+                                
+                                {% if field.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ field.errors|join:", " }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+
+                        <div class="text-center mt-4">
+                            <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                                <button type="submit" class="submit-btn">
+                                    <i class="fas fa-paper-plane me-2"></i>Submit Application
+                                </button>
+                                <a href="{% url 'requirements' job.id %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Requirements
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Optional: Form validation script
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+
+    // File input preview and validation
+    document.querySelectorAll('input[type="file"]').forEach(input => {
+        input.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // File size validation (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    this.value = '';
+                    alert('File size must be less than 5MB');
+                    return;
+                }
+                
+                // Update upload box with file name
+                const uploadBox = this.closest('.upload-box');
+                const fileName = document.createElement('div');
+                fileName.className = 'mt-2 text-success';
+                fileName.innerHTML = `<i class="fas fa-check-circle me-2"></i>${file.name}`;
+                
+                const existingFileName = uploadBox.querySelector('.text-success');
+                if (existingFileName) {
+                    existingFileName.remove();
+                }
+                
+                uploadBox.appendChild(fileName);
+            }
+        });
+    });
+</script>
+{% endblock %}
+

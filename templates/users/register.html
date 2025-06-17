@@ -1,0 +1,395 @@
+{% extends 'base.html' %}
+{% block extra_css %}
+<style>
+    .auth-hero {
+        background: linear-gradient(rgba(0, 122, 138, 0.9), rgba(194, 28, 194, 0.8)),
+                    url('https://img.freepik.com/free-vector/passenger-airplane-isolated_1284-41822.jpg') center/cover;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: -5rem;
+        padding: 5rem 1rem;
+    }
+
+    .auth-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        width: 100%;
+        max-width: 800px;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    @media (min-width: 768px) {
+        .auth-card {
+            padding: 2.5rem;
+        }
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .auth-header h2 {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        font-size: 1.75rem;
+    }
+
+    @media (min-width: 768px) {
+        .auth-header h2 {
+            font-size: 2rem;
+        }
+    }
+
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+        .form-control {
+            font-size: 1rem;
+        }
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(194, 28, 194, 0.15);
+    }
+
+    .btn-auth {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .btn-auth:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(194, 28, 194, 0.3);
+        color: white;
+    }
+
+    .auth-links {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    @media (min-width: 768px) {
+        .auth-links {
+            font-size: 1rem;
+        }
+    }
+
+    .auth-links a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .auth-links a:hover {
+        text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .help-text {
+        font-size: 0.75rem;
+        color: var(--text-gray);
+        margin-top: 0.25rem;
+    }
+
+    @media (min-width: 768px) {
+        .help-text {
+            font-size: 0.875rem;
+        }
+    }
+
+    .error-text {
+        color: #dc3545;
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+    }
+
+    @media (min-width: 768px) {
+        .error-text {
+            font-size: 0.875rem;
+        }
+    }
+
+    .form-label {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    @media (min-width: 768px) {
+        .form-label {
+            font-size: 1rem;
+        }
+    }
+
+    /* Make form responsive */
+    @media (max-width: 576px) {
+        .auth-card {
+            padding: 1.5rem;
+        }
+        
+        .auth-header h2 {
+            font-size: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="auth-hero">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2>Create Account</h2>
+            <p class="text-muted">Join CasQid Travels today</p>
+        </div>
+        
+        <!-- Display form-wide errors if any -->
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger mb-3">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-md-6">
+                    <!-- First Name -->
+                    <div class="form-group">
+                        <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+                        <input type="text" name="first_name" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" required
+                            id="{{ form.first_name.id_for_label }}" minlength="3"
+                            placeholder="Enter your first name" value="{{ form.first_name.value|default:'' }}" autofocus>
+                        {% if form.first_name.errors %}
+                            <div class="error-text text-danger">{{ form.first_name.errors.0 }}</div>
+                        {% endif %}
+                        <div class="invalid-feedback">Please enter at least 3 characters.</div>
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="form-group">
+                        <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                        <input type="text" name="last_name" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" required
+                            id="{{ form.last_name.id_for_label }}" minlength="3"
+                            placeholder="Enter your last name" value="{{ form.last_name.value|default:'' }}">
+                        {% if form.last_name.errors %}
+                            <div class="error-text text-danger">{{ form.last_name.errors.0 }}</div>
+                        {% endif %}
+                        <div class="invalid-feedback">Please enter at least 3 characters.</div>
+                    </div>
+
+                    <!-- Username -->
+                    <div class="form-group">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control {% if form.username.errors %}is-invalid{% endif %}" required
+                            id="{{ form.username.id_for_label }}"
+                            placeholder="Choose a username" value="{{ form.username.value|default:'' }}">
+                        {% if form.username.errors %}
+                            <div class="error-text text-danger">{{ form.username.errors.0 }}</div>
+                        {% endif %}
+                        <div class="invalid-feedback">Please provide a valid username.</div>
+                    </div>
+                </div>
+                
+                <!-- Right Column -->
+                <div class="col-md-6">
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" required
+                            id="{{ form.email.id_for_label }}"
+                            placeholder="Enter your email" value="{{ form.email.value|default:'' }}">
+                        {% if form.email.errors %}
+                            <div class="error-text text-danger">{{ form.email.errors.0 }}</div>
+                        {% endif %}
+                        <div class="invalid-feedback">Please provide a valid email address.</div>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="form-group">
+                        <label for="{{ form.phone_number.id_for_label }}" class="form-label">Phone Number</label>
+                        <input type="tel" name="phone_number" class="form-control {% if form.phone_number.errors %}is-invalid{% endif %}" required
+                            id="{{ form.phone_number.id_for_label }}"
+                            placeholder="e.g., 254712345678" value="{{ form.phone_number.value|default:'' }}">
+                        {% if form.phone_number.errors %}
+                            <div class="error-text text-danger">{{ form.phone_number.errors.0 }}</div>
+                        {% endif %}
+                        <div class="invalid-feedback">Please provide a valid phone number.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="{{ form.password1.id_for_label }}" class="form-label">Password</label>
+                        <div class="input-group">
+                            <input type="password" name="password1" class="form-control {% if form.password1.errors %}is-invalid{% endif %}" required
+                                id="{{ form.password1.id_for_label }}"
+                                placeholder="Create a strong password">
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword1">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        {% if form.password1.errors %}
+                            <div class="error-text text-danger">{{ form.password1.errors.0 }}</div>
+                        {% endif %}
+                        <div class="help-text">{{ form.password1.help_text }}</div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <!-- Confirm Password -->
+                    <div class="form-group">
+                        <label for="{{ form.password2.id_for_label }}" class="form-label">Confirm Password</label>
+                        <div class="input-group">
+                            <input type="password" name="password2" class="form-control {% if form.password2.errors %}is-invalid{% endif %}" required
+                                id="{{ form.password2.id_for_label }}"
+                                placeholder="Repeat your password">
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword2">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        {% if form.password2.errors %}
+                            <div class="error-text text-danger">{{ form.password2.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-auth">
+                    <i class="fas fa-user-plus me-2"></i>Create Account
+                </button>
+            </div>
+        </form>
+
+        <div class="auth-links">
+            <p>Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add this at the beginning of your script
+    function togglePassword(inputId, buttonId) {
+        const input = document.getElementById(inputId);
+        const button = document.getElementById(buttonId);
+        const icon = button.querySelector('i');
+        
+        button.addEventListener('click', () => {
+            // Toggle the input type
+            input.type = input.type === 'password' ? 'text' : 'password';
+            
+            // Toggle the icon
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize password toggles
+        togglePassword('{{ form.password1.id_for_label }}', 'togglePassword1');
+        togglePassword('{{ form.password2.id_for_label }}', 'togglePassword2');
+        
+        // Your existing form validation code...
+        const form = document.querySelector('form');
+        
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            form.classList.add('was-validated');
+        });
+        
+        // Handle input events for validation feedback
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', function() {
+                // Special validation for name fields (minimum 3 characters)
+                if (this.name === 'first_name' || this.name === 'last_name') {
+                    if (this.value.length >= 3) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                        this.setCustomValidity('');
+                    } else {
+                        this.classList.remove('is-valid');
+                        if (this.value !== '') {
+                            this.classList.add('is-invalid');
+                            this.setCustomValidity('Name must be at least 3 characters');
+                        } else {
+                            this.setCustomValidity('');
+                        }
+                    }
+                } else {
+                    // Default validation for other fields
+                    if (this.checkValidity()) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else {
+                        this.classList.remove('is-valid');
+                        if (this.value !== '') {
+                            this.classList.add('is-invalid');
+                        }
+                    }
+                }
+                
+                const errorDiv = this.parentElement.querySelector('.error-text');
+                if (errorDiv) {
+                    errorDiv.style.display = 'none';
+                }
+            });
+        });
+        
+        // Password match validation
+        const password1 = document.getElementById('{{ form.password1.id_for_label }}');
+        const password2 = document.getElementById('{{ form.password2.id_for_label }}');
+        
+        password2.addEventListener('input', function() {
+            if (password1.value !== password2.value) {
+                this.setCustomValidity("Passwords don't match");
+            } else {
+                this.setCustomValidity("");
+            }
+        });
+    });
+</script>
+{% endblock %}

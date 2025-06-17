@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Our Services - CasQid Travels{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Brand colors (matching base template) */
+    :root {
+        --primary-color: #C21CC2;
+        --secondary-color: #007A8A;
+        --text-gray: #808080;
+        --text-color: #4A4A4A;
+    }
+    
+    .services-hero {
+        background: linear-gradient(rgba(0, 122, 138, 0.9), rgba(194, 28, 194, 0.8)),
+                    url('{% static "images/services-bg.jpg" %}') center/cover;
+        padding: 6rem 0;
+        color: white;
+        margin-top: -3rem;
+        text-align: center;
+    }
+    
+    .service-card {
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        margin-bottom: 1.5rem;
+    }
+    
+    .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    
+    .service-image {
+        height: 200px;
+        object-fit: cover;
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+    }
+    
+    .service-content {
+        padding: 1.5rem;
+    }
+    
+    .service-title {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        font-size: 1.25rem;
+    }
+    
+    .service-description {
+        color: var(--text-color);
+        margin-bottom: 1rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .service-btn {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        border-radius: 2rem;
+        padding: 0.5rem 1.5rem;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    
+    .service-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(194, 28, 194, 0.2);
+        color: white;
+    }
+    
+    .section-heading {
+        position: relative;
+        margin-bottom: 2.5rem;
+        font-weight: 700;
+        text-align: center;
+    }
+    
+    .section-heading:after {
+        content: '';
+        position: absolute;
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="services-hero">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">Our Services</h1>
+        <p class="lead mb-0">Comprehensive solutions to help you achieve your global aspirations</p>
+    </div>
+</section>
+
+<div class="container py-5">
+    <h2 class="section-heading">What We Offer</h2>
+    
+    <div class="row g-4">
+        {% for service in services %}
+        <div class="col-md-6 col-lg-4">
+            <div class="service-card">
+                {% if service.image %}
+                    <img src="{{ service.image.url }}" alt="{{ service.name }}" class="service-image w-100">
+                {% else %}
+                    <div class="service-image w-100 d-flex align-items-center justify-content-center bg-light">
+                        <i class="fas {{ service.icon|default:'fa-globe' }} fa-3x text-muted"></i>
+                    </div>
+                {% endif %}
+                
+                <div class="service-content">
+                    <h3 class="service-title">{{ service.name }}</h3>
+                    <p class="service-description">{{ service.description }}</p>
+                    <div class="text-end">
+                        <a href="{% url 'service_detail' service.id %}" class="service-btn btn">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="fas fa-tools fa-3x text-muted mb-3"></i>
+            <h3>No services available yet</h3>
+            <p class="text-muted">Please check back soon for updated services.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- CTA Section -->
+    <div class="mt-5 py-4 px-4 bg-light rounded-3 text-center">
+        <h3 class="mb-3">Need a Customized Solution?</h3>
+        <p class="mb-4">Contact our team to discuss how we can tailor our services to meet your specific requirements.</p>
+        <a href="{% url 'contact' %}" class="btn btn-lg service-btn">
+            <i class="fas fa-envelope me-2"></i>Get in Touch
+        </a>
+    </div>
+</div>
+{% endblock %}

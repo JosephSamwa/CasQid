@@ -1,0 +1,540 @@
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '25/03, 3:57\u202fpm', 'key': 'TCP52F2P2T Confirmed. KES 60,000.00 received from HADIJA HASSANO SOMO tel 254723992177 for account 201510 ABDIMAJID ABDINASIR MAALIM on 25/03/25 at 03:57 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '25/03, 4:08\u202fpm', 'key': 'TCP02FYR6Q Confirmed. KES 100,000.00 received from ABDIMAJID ABDINASIR MAALIM tel 254722201510 for account 201510 ABDIMAJID ABDINASIR MAALIM on 25/03/25 at 04:03 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+[UID:1405][3692792] Child process with pid: 3693072 was killed by signal: 15, core dumped: no
+Unexpected error processing M-Pesa transaction
+Traceback (most recent call last):
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/models/query.py", line 948, in get_or_create
+    return self.get(**kwargs), False
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/models/query.py", line 649, in get
+    raise self.model.DoesNotExist(
+payments.models.Payment.DoesNotExist: Payment matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 354, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/itqenfzy/casqidtravels.com/payments/views.py", line 123, in add_mpesa_transaction
+    transaction_obj, created = Payment.objects.get_or_create(
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/models/query.py", line 955, in get_or_create
+    return self.create(**params), True
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/models/query.py", line 679, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/models/base.py", line 892, in save
+    self.save_base(
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/models/base.py", line 998, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/models/base.py", line 1161, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/models/base.py", line 1202, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/models/query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/itqenfzy/virtualenv/casqidtravels.com/3.11/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 354, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: database is locked
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '25/03, 3:57\u202fpm', 'key': 'TCP92F1YV1 Confirmed. KES 60,000.00 received from Nafisa Hussein Ahmed tel 254720804433 for account 201510 ABDIMAJID ABDINASIR MAALIM on 25/03/25 at 03:57 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '26/03, 6:11\u202fam', 'key': 'TCQ04RVTXG Confirmed. KES 130,000.00 received from ABDIMAJID ABDINASIR MAALIM tel 254722201510 for account 201510 ABDIMAJID ABDINASIR MAALIM on 26/03/25 at 06:11 AM. Enquiries, call 0719088000.'}
+Database consistency
+Unexpected error processing M-Pesa transaction
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '26/03, 10:40\u202fam', 'key': 'TCQ95LAD91 Confirmed. KES 80,000.00 received from SAADIA HASSAN ABDALLA tel 254721375038 for account 201510 ABDIMAJID ABDINASIR MAALIM on 26/03/25 at 10:39 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '26/03, 12:31\u202fpm', 'key': 'TCQ160QBMB Confirmed. KES 30,000.00 received from ZUBER HASSAN ABDULLAHI tel 254704598819 for account 201510 ABDIMAJID ABDINASIR MAALIM on 26/03/25 at 12:31 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+OSError: LSAPI: File error
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '27/03, 12:49\u202fpm', 'key': 'TCR1AMD44X Confirmed. KES 60,000.00 received from MOHAMED AMIN HUSSEIN AHMED tel 254769960102 for account 201510 ABDIMAJID ABDINASIR MAALIM on 27/03/25 at 12:49 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '27/03, 12:49\u202fpm', 'key': 'TCR1AMD44X Confirmed. KES 60,000.00 received from MOHAMED AMIN HUSSEIN AHMED tel 254769960102 for account 201510 ABDIMAJID ABDINASIR MAALIM on 27/03/25 at 12:49 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+OSError: LSAPI: File error
+[UID:1405][333539] Child process with pid: 718708 was killed by signal: 15, core dumped: no
+[UID:1405][1044880] Child process with pid: 1045225 was killed by signal: 15, core dumped: no
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '27/03, 8:21\u202fpm', 'key': 'TCR3CXOMVV Confirmed. KES 16,000.00 received from BRIAN OKARI tel 254724255908 for account 201510 ABDIMAJID ABDINASIR MAALIM on 27/03/25 at 08:21 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '27/03, 8:48\u202fpm', 'key': 'TCR2D349LW Confirmed. KES 16,000.00 received from JONATHAN ORWARU NYAMIAKA tel 254701183472 for account 201510 ABDIMAJID ABDINASIR MAALIM on 27/03/25 at 08:48 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+[UID:1405][265794] Child process with pid: 266077 was killed by signal: 15, core dumped: no
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '28/03, 10:59\u202fam', 'key': 'TCS3EP86YV Confirmed. KES 50,000.00 received from CECILIA WANJIRU KANGETHE tel 254722536657 for account 201510 ABDIMAJID ABDINASIR MAALIM on 28/03/25 at 10:59 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+io.UnsupportedOperation: fileno
+io.UnsupportedOperation: fileno
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '28/03, 11:45\u202fam', 'key': 'TCS3EVSXYN Confirmed. KES 40,000.00 received from MASLAH ALI YAROW tel 254711191845 for account 201510 ABDIMAJID ABDINASIR MAALIM on 28/03/25 at 11:44 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '28/03, 5:01\u202fpm', 'key': 'TCS6G9SJFE Confirmed. KES 10,000.00 received from ABDIMAJID ABDINASIR MAALIM tel 254722201510 for account 201510 ABDIMAJID ABDINASIR MAALIM on 28/03/25 at 05:01 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '29/03, 12:23\u202fam', 'key': 'TCT4IBNCEQ Confirmed. KES 5,000.00 received from ABDIMAJID ABDINASIR MAALIM tel 254722201510 for account 201510 ABDIMAJID ABDINASIR MAALIM on 29/03/25 at 12:23 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '31/03, 10:30\u202fam', 'key': 'TCV6SEDKXI Confirmed. KES 50,000.00 received from CECILIA WANJIRU KANGETHE tel 254722536657 for account 201510 ABDIMAJID ABDINASIR MAALIM on 31/03/25 at 10:30 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Avatar field must be an ImageField/URLField on the user model, or a callable
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 7, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2968426] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+io.UnsupportedOperation: fileno
+io.UnsupportedOperation: fileno
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '01/04, 10:46\u202fam', 'key': 'TD19X49Y9F Confirmed. KES 22,500.00 received from Dorothy Wambui Kiriba tel 254741231748 for account 201510 ABDIMAJID ABDINASIR MAALIM on 01/04/25 at 10:46 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '01/04, 10:48\u202fam', 'key': 'TD16X4KLK8 Confirmed. KES 3,000.00 received from Dorothy Wambui Kiriba tel 254741231748 for account 201510 ABDIMAJID ABDINASIR MAALIM on 01/04/25 at 10:48 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '01/04, 10:58\u202fam', 'key': 'TD18X5ZVO0 Confirmed. KES 80,000.00 received from Hamza adan abdi tel 254721410275 for account 201510 ABDIMAJID ABDINASIR MAALIM on 01/04/25 at 10:58 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '01/04, 12:08\u202fpm', 'key': 'TD17XGHGH3 Confirmed. KES 250,000.00 received from I&M BANK LTD - BANK TO TILL tel 254714082482 for account 201510 ABDIMAJID ABDINASIR MAALIM on 01/04/25 at 12:08 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '01/04, 3:37\u202fpm', 'key': 'TD17YDD5YN Confirmed. KES 25,000.00 received from Feisal Dube Intole tel 254725598047 for account 201510 ABDIMAJID ABDINASIR MAALIM on 01/04/25 at 03:37 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '02/04, 12:49\u202fpm', 'key': 'TD223GEZC2 Confirmed. KES 20,000.00 received from JANE WANGARI MIRINGU tel 254715541736 for account 201510 ABDIMAJID ABDINASIR MAALIM on 02/04/25 at 12:49 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '02/04, 1:43\u202fpm', 'key': 'TD233P6RMF Confirmed. KES 15,000.00 received from ISAACK KAMAU MUKURU tel 254740772819 for account 201510 ABDIMAJID ABDINASIR MAALIM on 02/04/25 at 01:43 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 6, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1001239] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '03/04, 1:04\u202fpm', 'key': 'TD308CY1KU Confirmed. KES 60,000.00 received from abdihakim rashid ibrahim tel 254726002152 for account 201510 ABDIMAJID ABDINASIR MAALIM on 03/04/25 at 01:04 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '03/04, 1:04\u202fpm', 'key': 'TD308CY236 Confirmed. KES 60,000.00 received from hashim ali osman tel 254725967653 for account 201510 ABDIMAJID ABDINASIR MAALIM on 03/04/25 at 01:04 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '03/04, 1:23\u202fpm', 'key': 'TD388G1L66 Confirmed. KES 50,000.00 received from ROSE JEPKOECH TANGUT tel 254714082482 for account 201510 ABDIMAJID ABDINASIR MAALIM on 03/04/25 at 01:23 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '07/04, 10:56\u202fam', 'key': 'TD77QUVXMP Confirmed. KES 80,000.00 received from TREVOR MUTUMA GITONGA tel 254705651991 for account 201510 ABDIMAJID ABDINASIR MAALIM on 07/04/25 at 10:56 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '08/04, 3:41\u202fpm', 'key': 'TD85WVEJ31 Confirmed. KES 60,000.00 received from LUCY WANJIKU tel 254729811573 for account 201510 ABDIMAJID ABDINASIR MAALIM on 08/04/25 at 03:41 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '09/04, 11:47\u202fam', 'key': 'TD991MH5BN Confirmed. KES 12,000.00 received from SAADIA HASSAN ABDALLA tel 254721375038 for account 201510 ABDIMAJID ABDINASIR MAALIM on 09/04/25 at 11:47 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '09/04, 11:49\u202fam', 'key': 'TD941MOQJM Confirmed. KES 1,000.00 received from SAADIA HASSAN ABDALLA tel 254721375038 for account 201510 ABDIMAJID ABDINASIR MAALIM on 09/04/25 at 11:49 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '09/04, 12:45\u202fpm', 'key': 'TD951V43OR Confirmed. KES 20,000.00 received from LUCY WANJIKU tel 254729811573 for account 201510 ABDIMAJID ABDINASIR MAALIM on 09/04/25 at 12:44 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '10/04, 10:16\u202fam', 'key': 'TDA65YFPF2 Confirmed. KES 77,000.00 received from NAOM NYABIAGE NYAMAO tel 254706396832 for account 201510 ABDIMAJID ABDINASIR MAALIM on 10/04/25 at 10:16 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '10/04, 10:17\u202fam', 'key': 'TDA65YFPF2 Confirmed. KES 77,000.00 received from NAOM NYABIAGE NYAMAO tel 254706396832 for account 201510 ABDIMAJID ABDINASIR MAALIM on 10/04/25 at 10:16 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '10/04, 10:33\u202fam', 'key': 'TDA060UPPE Confirmed. KES 20,000.00 received from ABDIMAJID ABDINASIR MAALIM tel 254722201510 for account 201510 ABDIMAJID ABDINASIR MAALIM on 10/04/25 at 10:33 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '10/04, 10:33\u202fam', 'key': 'TDA060UPPE Confirmed. KES 20,000.00 received from ABDIMAJID ABDINASIR MAALIM tel 254722201510 for account 201510 ABDIMAJID ABDINASIR MAALIM on 10/04/25 at 10:33 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '10/04, 11:14\u202fam', 'key': 'TDA366XX6J Confirmed. KES 40,000.00 received from PAUL MURIGI MBUGUA tel 254794636948 for account 201510 ABDIMAJID ABDINASIR MAALIM on 10/04/25 at 11:14 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '10/04, 11:14\u202fam', 'key': 'TDA366XX6J Confirmed. KES 40,000.00 received from PAUL MURIGI MBUGUA tel 254794636948 for account 201510 ABDIMAJID ABDINASIR MAALIM on 10/04/25 at 11:14 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '10/04, 12:11\u202fpm', 'key': 'TDA66FFCJ4 Confirmed. KES 20,000.00 received from MICHAEL GUCHU KANENE tel 254721128048 for account 201510 ABDIMAJID ABDINASIR MAALIM on 10/04/25 at 12:11 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '10/04, 12:11\u202fpm', 'key': 'TDA66FFCJ4 Confirmed. KES 20,000.00 received from MICHAEL GUCHU KANENE tel 254721128048 for account 201510 ABDIMAJID ABDINASIR MAALIM on 10/04/25 at 12:11 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '10/04, 12:46\u202fpm', 'key': 'TDA86KOF6M Confirmed. KES 80,000.00 received from JOHN MURIITHI WAWERU tel 254722361182 for account 201510 ABDIMAJID ABDINASIR MAALIM on 10/04/25 at 12:46 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '10/04, 12:46\u202fpm', 'key': 'TDA86KOF6M Confirmed. KES 80,000.00 received from JOHN MURIITHI WAWERU tel 254722361182 for account 201510 ABDIMAJID ABDINASIR MAALIM on 10/04/25 at 12:46 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+io.UnsupportedOperation: fileno
+io.UnsupportedOperation: fileno
+io.UnsupportedOperation: fileno
+io.UnsupportedOperation: fileno
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '10/04, 5:04\u202fpm', 'key': 'TDA47Q5A9C Confirmed. KES 61,500.00 received from EDITH NDUTA MWANGI tel 254724214513 for account 201510 ABDIMAJID ABDINASIR MAALIM on 10/04/25 at 05:03 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '10/04, 5:04\u202fpm', 'key': 'TDA47Q5A9C Confirmed. KES 61,500.00 received from EDITH NDUTA MWANGI tel 254724214513 for account 201510 ABDIMAJID ABDINASIR MAALIM on 10/04/25 at 05:03 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '11/04, 7:44\u202fam', 'key': 'TDB8A3KANC Confirmed. KES 5,000.00 received from ABDIMAJID ABDINASIR MAALIM tel 254722201510 for account 201510 ABDIMAJID ABDINASIR MAALIM on 11/04/25 at 07:44 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '11/04, 1:51\u202fpm', 'key': 'TDB3BMQ7S9 Confirmed. KES 100,000.00 received from ANNIE NJERI tel 254721826081 for account 201510 ABDIMAJID ABDINASIR MAALIM on 11/04/25 at 01:51 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '11/04, 4:54\u202fpm', 'key': 'TDB5CH6EXN Confirmed. KES 80,000.00 received from Ali Mohamed Ali tel 254705631429 for account 201510 ABDIMAJID ABDINASIR MAALIM on 11/04/25 at 04:54 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '14/04, 4:38\u202fpm', 'key': 'TDE9Q4SM1X Confirmed. KES 80,000.00 received from OSAMA OSMAN HATHE tel 254745917251 for account 201510 ABDIMAJID ABDINASIR MAALIM on 14/04/25 at 04:38 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+[UID:1405][4116663] Child process with pid: 31111 was killed by signal: 15, core dumped: no
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '14/04, 6:21\u202fpm', 'key': 'TDE1QOOXI1 Confirmed. KES 12,200.00 received from REUBEN ALUOCHO K MAKOKHA tel 254722812729 for account 201510 ABDIMAJID ABDINASIR MAALIM on 14/04/25 at 06:21 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+[UID:1405][2240685] Child process with pid: 2567640 was killed by signal: 15, core dumped: no
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '15/04, 12:18\u202fpm', 'key': 'TDF4TMYUEK Confirmed. KES 60,000.00 received from Yasin Mohamed Gudow tel 254748348938 for account 201510 ABDIMAJID ABDINASIR MAALIM on 15/04/25 at 12:18 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '15/04, 12:19\u202fpm', 'key': 'TDF6TN4DOI Confirmed. KES 80,000.00 received from AHMED MUKTAR AHMED tel 254769995486 for account 201510 ABDIMAJID ABDINASIR MAALIM on 15/04/25 at 12:19 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '15/04, 1:23\u202fpm', 'key': 'TDF8TWWK4Q Confirmed. KES 100,000.00 received from DORCAS GATHONI KARIUKI tel 254743543905 for account 201510 ABDIMAJID ABDINASIR MAALIM on 15/04/25 at 01:23 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '15/04, 1:23\u202fpm', 'key': 'TDF9TWZ1A7 Confirmed. KES 100,000.00 received from Grace Wamucii Kariuki tel 254768819000 for account 201510 ABDIMAJID ABDINASIR MAALIM on 15/04/25 at 01:23 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '15/04, 4:07\u202fpm', 'key': 'TDF0UNS3KG Confirmed. KES 50,000.00 received from LILIAN WAITHIRA MWAI tel 254722849728 for account 201510 ABDIMAJID ABDINASIR MAALIM on 15/04/25 at 04:07 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '16/04, 9:36\u202fam', 'key': 'TDG8XPRB0C Confirmed. KES 80,000.00 received from FLORA WANJIRU WAMBUI tel 254720247373 for account 201510 ABDIMAJID ABDINASIR MAALIM on 16/04/25 at 09:36 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '16/04, 10:16\u202fam', 'key': 'TDG6XVL9ES Confirmed. KES 20,000.00 received from Yasin Mohamed Gudow tel 254748348938 for account 201510 ABDIMAJID ABDINASIR MAALIM on 16/04/25 at 10:16 AM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '16/04, 2:59\u202fpm', 'key': 'TDG1Z2WDNB Confirmed. KES 100,000.00 received from MITCH OCHIENG OWITI tel 254722534771 for account 201510 ABDIMAJID ABDINASIR MAALIM on 16/04/25 at 02:59 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '16/04, 6:06\u202fpm', 'key': 'TDG2ZZ364E Confirmed. KES 70,000.00 received from CHRISTINE WANJIRU WANYOIKE tel 254721595699 for account 201510 ABDIMAJID ABDINASIR MAALIM on 16/04/25 at 06:06 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '16/04, 10:03\u202fpm', 'key': 'TDG22EVUVE Confirmed. KES 80,000.00 received from BISHAR AHMED YARROW tel 254720604901 for account 201510 ABDIMAJID ABDINASIR MAALIM on 16/04/25 at 10:03 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+[UID:1405][512484] Child process with pid: 512939 was killed by signal: 15, core dumped: no
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '18/04, 7:53\u202fpm', 'key': 'TDI2BAI986 Confirmed. KES 100,000.00 received from CECILIA WANJIRU KANGETHE tel 254722536657 for account 201510 ABDIMAJID ABDINASIR MAALIM on 18/04/25 at 07:53 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Received M-Pesa transaction request
+Received M-Pesa transaction request data: %s {'time': '19/04, 7:34\u202fpm', 'key': 'TDJ4FQERVG Confirmed. KES 100,000.00 received from AHMED MOHAMMED ALIOW tel 254757672506 for account 201510 ABDIMAJID ABDINASIR MAALIM on 19/04/25 at 07:34 PM. Enquiries, call 0719088000.'}
+Database consistency
+Transaction processed successfully
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+[UID:1405][3761272] Child process with pid: 3763423 was killed by signal: 15, core dumped: no
+[UID:1405][383677] Reached max children process limit: 6, extra: 2, current: 8, busy: 7, please increase LSAPI_CHILDREN.
+[UID:1405][383677] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][383677] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][383677] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][383677] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][383677] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][383677] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][383677] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][383677] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][383677] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][383677] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][383677] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+Avatar field must be an ImageField/URLField on the user model, or a callable
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 7, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 7, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 7, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 7, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][1341190] Reached max children process limit: 6, extra: 2, current: 8, busy: 8, please increase LSAPI_CHILDREN.
+[UID:1405][2134174] Child process with pid: 2372861 was killed by signal: 15, core dumped: no
+[UID:1405][1747922] Child process with pid: 1773538 was killed by signal: 15, core dumped: no
+[UID:1405][2898994] Child process with pid: 3976178 was killed by signal: 15, core dumped: no
+[UID:1405][2507045] Child process with pid: 2653360 was killed by signal: 15, core dumped: no
+OSError: LSAPI: File error
+OSError: LSAPI: File error
+OSError: LSAPI: File error
+OSError: LSAPI: File error
+[UID:1405][2179113] Child process with pid: 2187043 was killed by signal: 15, core dumped: no
+OSError: LSAPI: File error

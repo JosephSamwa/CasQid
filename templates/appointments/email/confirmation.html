@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointment Request Received</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #0d6efd; color: white; padding: 10px; text-align: center; }
+        .content { padding: 20px; border: 1px solid #ddd; }
+        .footer { margin-top: 20px; font-size: 0.8em; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Appointment Request Received</h1>
+        </div>
+        <div class="content">
+            <p>Dear {{ appointment.client_name }},</p>
+            <p>Thank you for booking an appointment with us for <strong>{{ appointment.service.name }}</strong>.</p>
+            
+            <h3>Appointment Details:</h3>
+            <ul>
+                <li><strong>Requested Date:</strong> {{ appointment.requested_date|date:"F j, Y" }}</li>
+                <li><strong>Requested Time:</strong> {{ appointment.requested_time|time:"g:i A" }}</li>
+            </ul>
+            
+            <p>Your request is currently <strong>pending</strong>. Our team will review your request and get back to you shortly with a confirmation.</p>
+            
+            <p>If you need to make any changes or have any questions, please don't hesitate to contact us.</p>
+            
+            <p>Best regards,<br>The Travel Agency Team</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated message. Please do not reply directly to this email.</p>
+        </div>
+    </div>
+</body>
+</html>

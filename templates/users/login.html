@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+<style>
+        :root {
+        --primary-color: #3498db;
+        --secondary-color: #2ecc71;
+        --background-color: #f4f7f6;
+        --text-color: #2c3e50;
+    }
+
+    .login-container {
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        width: 100%;
+        max-width: 400px;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    .login-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .login-header h2 {
+        color: var(--primary-color);
+        font-weight: 900;
+        margin-bottom: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--text-color);
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        transition: border-color 0.3s ease;
+        font-size: 16px;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+
+    .btn {
+        display: inline-block;
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        margin-bottom: 15px;
+    }
+
+    .btn-primary:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-link {
+        background: none;
+        color: var(--primary-color);
+        text-decoration: none;
+        text-align: center;
+        display: block;
+    }
+
+    .btn-link:hover {
+        text-decoration: underline;
+    }
+
+    .register-section {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+    }
+
+    .register-section a {
+        color: var(--secondary-color);
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .register-section a:hover {
+        text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .login-container {
+            width: 90%;
+            padding: 25px;
+        }
+    }
+
+    .auth-hero {
+        background: linear-gradient(rgba(0, 122, 138, 0.9), rgba(194, 28, 194, 0.8)),
+                    url('https://img.freepik.com/free-vector/passenger-airplane-isolated_1284-41822.jpg') center/cover;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: -5rem;
+    }
+
+    .auth-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 400px;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .auth-header h2 {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(194, 28, 194, 0.15);
+    }
+
+    .btn-auth {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .btn-auth:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(194, 28, 194, 0.3);
+        color: white;
+    }
+
+    .auth-links {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+    .auth-links a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .auth-links a:hover {
+        text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+ 
+       
+</style>
+{% endblock %}
+{% block content %}
+<section class="auth-hero">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2>Welcome Back</h2>
+            <p class="text-muted">Sign in to continue to CasQid Travels</p>
+        </div>
+        
+                <form method="post">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" value="{{ username|default:'' }}" required autofocus>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-auth">
+                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+            </button>
+        </form>
+
+        <div class="auth-links">
+            <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+            <p><a href="{% url 'password_reset_request' %}">Forgot your password?</a></p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const inputs = form.querySelectorAll('input');
+
+            inputs.forEach(input => {
+                input.classList.add(
+                    'mt-1', 'block', 'w-full', 'rounded-lg', 'border-gray-300', 
+                    'shadow-sm', 'focus:border-blue-300', 'focus:ring', 
+                    'focus:ring-blue-200', 'focus:ring-opacity-50',
+                    'transition', 'duration-200', 'ease-in-out'
+                );
+                
+                input.addEventListener('input', function() {
+                    this.classList.remove('border-red-500');
+                    const errorElement = this.parentElement.querySelector('.text-red-500');
+                    if (errorElement) {
+                        errorElement.remove();
+                    }
+                });
+            });
+
+            
+            
+        });
+    </script>
+{% endblock %}

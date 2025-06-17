@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointment Approved</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #198754; color: white; padding: 10px; text-align: center; }
+        .content { padding: 20px; border: 1px solid #ddd; }
+        .footer { margin-top: 20px; font-size: 0.8em; color: #666; }
+        .booking-code { 
+            font-size: 1.5em; 
+            font-weight: bold; 
+            color: #198754;
+            text-align: center;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Appointment Approved</h1>
+        </div>
+        <div class="content">
+            <p>Dear {{ appointment.client_name }},</p>
+            <p>Your appointment for <strong>{{ appointment.service.name }}</strong> has been approved.</p>
+            
+            <div class="booking-code">
+                Booking Code: {{ appointment.booking_code }}
+            </div>
+            
+            <h3>Appointment Details:</h3>
+            <ul>
+                <li><strong>Date:</strong> {{ appointment.approved_date|date:"F j, Y" }}</li>
+                <li><strong>Time:</strong> {{ appointment.approved_time|time:"g:i A" }}</li>
+                <li><strong>Location:</strong> Our main office at 123 Travel Street, Suite 100</li>
+            </ul>
+            
+            <p>Please arrive 10 minutes before your scheduled time and bring any required documents.</p>
+            
+            <p>If you need to reschedule or cancel, please contact us at least 24 hours in advance.</p>
+            
+            <p>We look forward to seeing you!</p>
+            
+            <p>Best regards,<br>The Travel Agency Team</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated message. Please do not reply directly to this email.</p>
+        </div>
+    </div>
+</body>
+</html>

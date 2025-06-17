@@ -1,0 +1,422 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --color-primary-50: #eff6ff;
+        --color-primary-100: #dbeafe;
+        --color-primary-200: #bfdbfe;
+        --color-primary-300: #93c5fd;
+        --color-primary-400: #60a5fa;
+        --color-primary-500: #3b82f6;
+        --color-primary-600: #2563eb;
+        --color-primary-700: #1d4ed8;
+        --color-primary-800: #1e40af;
+        --color-primary-900: #1e3a8a;
+        
+        --color-surface-50: #f8fafc;
+        --color-surface-100: #f1f5f9;
+        --color-surface-200: #e2e8f0;
+        --color-surface-300: #cbd5e1;
+        --color-surface-400: #94a3b8;
+        --color-surface-500: #64748b;
+        --color-surface-600: #475569;
+        --color-surface-700: #334155;
+        --color-surface-800: #1e293b;
+        --color-surface-900: #0f172a;
+        
+        --font-family: 'Inter var', system-ui, -apple-system, sans-serif;
+        --font-size-sm: 0.875rem;
+        --font-size-base: 1rem;
+        --font-size-lg: 1.125rem;
+        --font-size-xl: 1.25rem;
+        --font-size-2xl: 1.5rem;
+        
+        --space-2: 0.5rem;
+        --space-4: 1rem;
+        --space-6: 1.5rem;
+        --space-8: 2rem;
+        --space-3: 0.75rem;
+        
+        --radius-md: 0.375rem;
+        --radius-lg: 0.5rem;
+        
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        
+        --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+        font-family: var(--font-family);
+        background-color: var(--color-surface-100);
+        color: var(--color-surface-900);
+    }
+
+    .profile-container {
+        max-width: 48rem;
+        margin: var(--space-8) auto;
+        padding: 0 var(--space-4);
+    }
+
+    .profile-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+    }
+
+    .profile-header {
+        background: linear-gradient(135deg, var(--color-primary-600), var(--color-primary-800));
+        padding: var(--space-6);
+        color: white;
+        text-align: center;
+    }
+
+    .profile-header h1 {
+        margin: 0;
+        font-size: var(--font-size-2xl);
+        font-weight: 700;
+    }
+
+    .profile-body {
+        padding: var(--space-6);
+    }
+
+    .form-group {
+        margin-bottom: var(--space-4);
+    }
+
+    .form-control {
+        width: 100%;
+        padding: var(--space-3);
+        border: 2px solid var(--color-primary-300);
+        border-radius: var(--radius-lg);
+        font-size: var(--font-size-base);
+        transition: all var(--transition-base);
+        background-color: var(--color-surface-50);
+        color: var(--color-surface-900);
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--color-primary-500);
+        box-shadow: 0 0 0 3px var(--color-primary-100);
+        background-color: white;
+    }
+
+    .form-control:hover {
+        border-color: var(--color-primary-400);
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: var(--space-2);
+        font-weight: 500;
+        color: var(--color-surface-700);
+    }
+
+    .btn-primary {
+        background-color: var(--color-primary-600);
+        color: white;
+        padding: var(--space-2) var(--space-4);
+        border: none;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color var(--transition-base);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--color-primary-700);
+    }
+
+    .error-message {
+        color: #ef4444;
+        font-size: var(--font-size-sm);
+        margin-top: var(--space-2);
+    }
+
+    fieldset {
+        border: 1px solid var(--color-surface-300);
+        border-radius: var(--radius-md);
+        padding: var(--space-4);
+        margin-bottom: var(--space-6);
+    }
+
+    legend {
+        font-weight: 600;
+        font-size: var(--font-size-lg);
+        color: var(--color-primary-700);
+        padding: 0 var(--space-2);
+        text-align: center;
+    }
+
+    @media (max-width: 640px) {
+        .profile-container {
+            padding: 0 var(--space-2);
+        }
+
+        .profile-header {
+            padding: var(--space-4);
+        }
+
+        .profile-body {
+            padding: var(--space-4);
+        }
+
+        fieldset {
+            padding: var(--space-2);
+        }
+    }
+    .camera-container {
+        text-align: center;
+        background: var(--color-surface-50);
+        padding: var(--space-4);
+        border-radius: var(--radius-md);
+    }
+
+    .camera-controls {
+        margin-top: var(--space-4);
+        display: flex;
+        gap: var(--space-4);
+        justify-content: center;
+    }
+
+    #camera-preview, #photo-preview {
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .error-message {
+        color: #ef4444;
+        margin-top: var(--space-4);
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-card">
+        <div class="profile-header">
+            <h1>Update Your Profile</h1>
+        </div>
+        <div class="profile-body">
+        
+
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+                <fieldset>
+                    <legend>Personal Information</legend>
+                    <div class="form-group">
+                        <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                            {{ form.first_name.label }}
+                        </label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                            <div class="error-message">{{ form.first_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                            {{ form.last_name.label }}
+                        </label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                            <div class="error-message">{{ form.last_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.date_of_birth.id_for_label }}" class="form-label">
+                            {{ form.date_of_birth.label }}
+                        </label>
+                        {{ form.date_of_birth }}
+                        {% if form.date_of_birth.errors %}
+                            <div class="error-message">{{ form.date_of_birth.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.phone_number.id_for_label }}" class="form-label">
+                            {{ form.phone_number.label }}
+                        </label>
+                        {{ form.phone_number }}
+                        {% if form.phone_number.errors %}
+                            <div class="error-message">{{ form.phone_number.errors }}</div>
+                        {% endif %}
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Address</legend>
+                    <div class="form-group">
+                        <label for="{{ form.address.id_for_label }}" class="form-label">
+                            {{ form.address.label }}
+                        </label>
+                        {{ form.address }}
+                        {% if form.address.errors %}
+                            <div class="error-message">{{ form.address.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.town.id_for_label }}" class="form-label">
+                            {{ form.town.label }}
+                        </label>
+                        {{ form.town }}
+                        {% if form.town.errors %}
+                            <div class="error-message">{{ form.town.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.county.id_for_label }}" class="form-label">
+                            {{ form.county.label }}
+                        </label>
+                        {{ form.county }}
+                        {% if form.county.errors %}
+                            <div class="error-message">{{ form.county.errors }}</div>
+                        {% endif %}
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>Identification</legend>
+                    <div class="form-group">
+                        <label for="{{ form.id_number.id_for_label }}" class="form-label">
+                            {{ form.id_number.label }}
+                        </label>
+                        {{ form.id_number }}
+                        {% if form.id_number.errors %}
+                            <div class="error-message">{{ form.id_number.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.passport_number.id_for_label }}" class="form-label">
+                            {{ form.passport_number.label }}
+                        </label>
+                        {{ form.passport_number }}
+                        {% if form.passport_number.errors %}
+                            <div class="error-message">{{ form.passport_number.errors }}</div>
+                        {% endif %}
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Profile Picture</legend>
+                    <div class="form-group">
+                        <label for="{{ form.profile_picture.id_for_label }}" class="form-label">
+                            {{ form.profile_picture.label }}
+                        </label>
+                        {% if profile.profile_picture %}
+                            <div class="mb-3">
+                                <img src="{{ profile.profile_picture.url }}" alt="Current profile picture" 
+                                     style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;" class="mb-2">
+                                <p class="small text-muted">Current profile picture</p>
+                            </div>
+                        {% endif %}
+                        <input type="file" id="profile-picture-input" name="profile_picture" 
+                               accept="image/*" class="form-control">
+                        <div class="small text-muted mt-1">Select an image file to upload as your profile picture</div>
+                        {% if form.profile_picture.errors %}
+                            <div class="error-message">{{ form.profile_picture.errors }}</div>
+                        {% endif %}
+                    </div>
+                </fieldset>
+
+                <button type="submit" class="btn-primary">Update Profile</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Phone number validation - restrict to digits and '+' only
+        const phoneInput = document.getElementById('{{ form.phone_number.id_for_label }}');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function(e) {
+                // Allow only digits, plus sign, and spaces
+                this.value = this.value.replace(/[^\d\+\s]/g, '');
+            });
+
+            phoneInput.addEventListener('keypress', function(e) {
+                // Check if the pressed key is not a digit, plus, or space
+                if (!/[\d\+\s]/.test(e.key)) {
+                    e.preventDefault();
+                }
+            });
+        }
+
+        // ID number validation - digits only
+        const idNumberInput = document.getElementById('{{ form.id_number.id_for_label }}');
+        if (idNumberInput) {
+            idNumberInput.addEventListener('input', function(e) {
+                // Allow only digits
+                this.value = this.value.replace(/\D/g, '');
+            });
+
+            idNumberInput.addEventListener('keypress', function(e) {
+                // Check if the pressed key is not a digit
+                if (!/\d/.test(e.key)) {
+                    e.preventDefault();
+                }
+            });
+        }
+
+        // Date of birth validation - ensure user is at least 18 years old
+        const dobInput = document.getElementById('{{ form.date_of_birth.id_for_label }}');
+        if (dobInput) {
+            // Calculate date 18 years ago from today
+            const today = new Date();
+            const eighteenYearsAgo = new Date(
+                today.getFullYear() - 18,
+                today.getMonth(),
+                today.getDate()
+            );
+            
+            // Format date as YYYY-MM-DD for input max attribute
+            const maxDate = eighteenYearsAgo.toISOString().split('T')[0];
+            
+            // Set max attribute on input
+            dobInput.setAttribute('max', maxDate);
+            
+            // Add validation on change
+            dobInput.addEventListener('change', function() {
+                const selectedDate = new Date(this.value);
+                
+                if (selectedDate > eighteenYearsAgo) {
+                    // User is under 18
+                    this.setCustomValidity('You must be at least 18 years old.');
+                    
+                    // Create or update error message
+                    let errorMessage = this.parentElement.querySelector('.dob-error');
+                    if (!errorMessage) {
+                        errorMessage = document.createElement('div');
+                        errorMessage.className = 'error-message dob-error';
+                        this.parentElement.appendChild(errorMessage);
+                    }
+                    errorMessage.textContent = 'You must be at least 18 years old.';
+                    
+                    // Style field as invalid
+                    this.classList.add('is-invalid');
+                    this.classList.remove('is-valid');
+                } else {
+                    // Valid date
+                    this.setCustomValidity('');
+                    
+                    // Remove any error message
+                    const errorMessage = this.parentElement.querySelector('.dob-error');
+                    if (errorMessage) {
+                        errorMessage.remove();
+                    }
+                    
+                    // Style field as valid
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
+

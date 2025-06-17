@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ job.title }} - {{ job.company }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .job-hero {
+        background: linear-gradient(rgba(0, 122, 138, 0.9), rgba(194, 28, 194, 0.8));
+        padding: 4rem 0;
+        color: white;
+        margin-top: -3rem;
+    }
+
+    .job-meta-card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        margin-top: -2rem;
+        position: relative;
+    }
+
+    .detail-card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .badge-custom {
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-weight: 500;
+    }
+
+    .badge-remote {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+    }
+
+    .skill-badge {
+        background-color: #f8f9fa;
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+        transition: all 0.3s ease;
+    }
+
+    .skill-badge:hover {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+    }
+
+    .apply-btn {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .apply-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(194, 28, 194, 0.3);
+        color: white;
+    }
+
+    .deadline-alert {
+        background: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+        border-radius: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="job-hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-5 fw-bold mb-3">{{ job.title }}</h1>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="text-white-50"><i class="fas fa-building me-2"></i>{{ job.company }}</span>
+                    <span class="text-white-50"><i class="fas fa-map-marker-alt me-2"></i>{{ job.country.name }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Job Meta Information -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="job-meta-card p-4 mb-4">
+                <div class="row g-4">
+                    <div class="col-md-3 text-center">
+                        <div class="text-muted small">Salary</div>
+                        <div class="fw-bold">{{ job.country.currency_code }}{{ job.min_salary }} per hour</div>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="text-muted small">Vacancies</div>
+                        <div class="fw-bold {% if job.vacancy_number < 5 %}text-danger{% else %}text-success{% endif %}">
+                            {{ job.vacancy_number }} Left
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="text-muted small">Job Type</div>
+                        <div class="fw-bold">{{ job.job_type }}</div>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="text-muted small">Experience</div>
+                        <div class="fw-bold">{{ job.experience_level }}</div>
+                    </div>
+                      <div class="col-md-3 text-center">
+                        <div class="text-muted small">Working Hours</div>
+                        <div class="fw-bold">{{ job.working_hours }}</div>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="text-muted small">Work Type</div>
+                        <div class="fw-bold">
+                            {% if job.remote_friendly %}
+                            <span class="badge badge-remote">Remote Available</span>
+                            {% else %}
+                            <span class="badge bg-secondary">On-site</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                      <div class="col-md-3 text-center">
+                        <div class="text-muted small">Processing Time</div>
+                        <div class="fw-bold">{{ job.processing_time }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job Description -->
+            <div class="detail-card p-4 mb-4">
+                <h4 class="mb-4">Job Description</h4>
+                <div class="job-description">
+                    {{ job.description|linebreaks }}
+                </div>
+            </div>
+
+           
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Application Card -->
+            <div class="detail-card p-4 mb-4" style="position: relative; top: auto;">
+
+                {% if job.application_deadline %}
+                <div class="deadline-alert p-3 mb-4">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-clock me-2"></i>
+                        <div>
+                            <strong>Application Deadline:</strong><br>
+                            <span>{{ job.application_deadline|date:"F d, Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <a href="{% url 'requirements' job.id %}" class="btn apply-btn w-100 mb-4">
+                    <i class="fas fa-paper-plane me-2"></i>Apply Now
+                </a>
+
+                <!-- Company Info -->
+                <div class="company-info">
+                    <h5 class="mb-3">About the Company</h5>
+
+                    {% if job.accommodation_available %}
+                    <div class="d-flex align-items-center text-success mb-3">
+                        <i class="fas fa-home me-2"></i>
+                        <span>Free Accommodation Available</span>
+                    </div>
+                    {% endif %}
+
+
+                    {% if job.transport %}
+                    <div class="d-flex align-items-center text-success mb-3">
+                        <i class="fas fa-home me-2"></i>
+                        <span>Free Transport Available</span>
+                    </div>
+                    {% endif %}
+
+                    {% if job.jobs_for_couples %}
+                    <div class="d-flex align-items-center text-success mb-3">
+                        <i class="fas fa-home me-2"></i>
+                        <span>Jobs for couples Available</span>
+                    </div>
+                    {% endif %}
+
+
+                </div>
+            </div>
+
+            <!-- Related Jobs -->
+            {% if related_jobs %}
+            <div class="detail-card p-4">
+                <h5 class="mb-4">Similar Jobs</h5>
+                {% for related_job in related_jobs %}
+                <div class="related-job mb-3{% if not forloop.last %} border-bottom pb-3{% endif %}">
+                    <h6 class="mb-1">
+                        <a href="{% url 'job_detail' related_job.pk %}" class="text-decoration-none">
+                            {{ related_job.title }}
+                        </a>
+                    </h6>
+                    <div class="small text-muted">{{ related_job.company }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

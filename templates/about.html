@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}About Us - CasQid Travels{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-hero {
+        background: linear-gradient(rgba(0, 122, 138, 0.9), rgba(194, 28, 194, 0.8)),
+                    url('https://img.freepik.com/free-photo/young-people-traveling-together_23-2149039021.jpg') center/cover;
+        padding: 6rem 0;
+        color: white;
+        margin-top: -3rem;
+    }
+
+    .stat-card {
+        border: none;
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: bold;
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .testimonial-card {
+        border: none;
+        transition: transform 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .testimonial-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 3px solid var(--primary-color);
+    }
+
+    .testimonial-quote {
+        position: relative;
+        padding: 20px;
+    }
+
+    .testimonial-quote::before {
+        content: '"';
+        font-size: 4rem;
+        position: absolute;
+        top: -20px;
+        left: -10px;
+        color: var(--primary-color);
+        opacity: 0.2;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="about-hero">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-4">About CasQid Travels</h1>
+        <p class="lead mb-0">Your trusted partner in exploring the world and building international careers</p>
+    </div>
+</section>
+
+<!-- Main Content -->
+<div class="container py-5">
+    <!-- Mission & Vision -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <i class="fas fa-bullseye text-primary mb-3" style="font-size: 2.5rem;"></i>
+                    <h3 class="card-title mb-3">Our Mission</h3>
+                    <p class="card-text">To provide exceptional travel and career opportunities that transform lives, connecting people with their dreams across borders.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <i class="fas fa-eye text-primary mb-3" style="font-size: 2.5rem;"></i>
+                    <h3 class="card-title mb-3">Our Vision</h3>
+                    <p class="card-text">To be the leading global facilitator of international travel and employment, creating opportunities for growth and cultural exchange.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="bg-light py-5 px-3 rounded-3 mb-5">
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-number mb-2" id="travelers-count">5000+</div>
+                    <p class="text-muted mb-0">Happy Travelers</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-number mb-2" id="years">3</div>
+                    <p class="text-muted mb-0">Years of Excellence</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-number mb-2" id="jobs-count">2500+</div>
+                    <p class="text-muted mb-0">Job Placements</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials -->
+    <h2 class="text-center mb-5">Client Testimonials</h2>
+    <div class="row g-4">
+        {% for testimonial in testimonials %}
+        <div class="col-md-6">
+            <div class="card testimonial-card h-100 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="testimonial-quote">
+                        <p class="mb-4">{{ testimonial.content }}</p>
+                        <div class="d-flex align-items-center">
+                            <img src="{{ testimonial.user_image.url|default:'/static/images/logo.jpg' }}" alt="{{ testimonial.name }}"
+                                 class="testimonial-image me-3">
+                            <div>
+                                <h5 class="mb-1">{{ testimonial.user.get_full_name }}</h5>
+                                <p class="text-muted small mb-0">{{ testimonial.role }}</p>
+                                <div class="text-warning">
+                                    {% for i in ''|ljust:testimonial.rating %}
+                                        <i class="fas fa-star"></i>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p class="text-muted">No testimonials yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Location Section -->
+    <section class="bg-light py-5 mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h2 class="mb-4">Visit Our Office</h2>
+                    <div class="d-flex align-items-start mb-3">
+                        <i class="fas fa-map-marker-alt text-primary mt-1 me-3"></i>
+                        <div>
+                            <h5 class="mb-1">Main Office</h5>
+                            <p class="text-muted mb-0">Diamond Plaza 1<br>Nairobi, Kenya</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start mb-3">
+                        <i class="fas fa-clock text-primary mt-1 me-3"></i>
+                        <div>
+                            <h5 class="mb-1">Working Hours</h5>
+                            <p class="text-muted mb-0">Monday - Friday: 8:00 AM - 6:00 PM<br>Saturday: 9:00 AM - 1:00 PM</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-phone text-primary mt-1 me-3"></i>
+                        <div>
+                            <h5 class="mb-1">Contact</h5>
+                            <p class="text-muted mb-0">Phone: +254 722 201510<br>Email: info@casqidtravels.com</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-0">
+                            <iframe 
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.0727299950345!2d36.81655684442661!3d-1.2593348973100564!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f171b71d96ab1%3A0x85adbff8dd9b15c7!2sDiamond%20Plaza%201!5e0!3m2!1sen!2ske!4v1741458644634!5m2!1sen!2ske"
+                                class="w-100" 
+                                height="400" 
+                                style="border:0;" 
+                                allowfullscreen="" 
+                                loading="lazy">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Animated counter function
+    function animateCounter(element, target) {
+        let count = 0;
+        const duration = 2000; // 2 seconds
+        const steps = 50;
+        const increment = target / steps;
+        const interval = duration / steps;
+        
+        const counter = setInterval(() => {
+            count += increment;
+            if (count >= target) {
+                element.textContent = target.toLocaleString();
+                clearInterval(counter);
+            } else {
+                element.textContent = Math.floor(count).toLocaleString();
+            }
+        }, interval);
+    }
+
+    // Intersection Observer for stats animation
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const element = entry.target;
+                const target = parseInt(element.textContent);
+                if (!isNaN(target)) {
+                    animateCounter(element, target);
+                }
+                observer.unobserve(element);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    // Observe stat numbers
+    document.querySelectorAll('.stat-number').forEach(stat => {
+        observer.observe(stat);
+    });
+</script>
+{% endblock %}

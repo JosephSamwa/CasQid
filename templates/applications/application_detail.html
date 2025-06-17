@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Application Details{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Application Details</h1>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{ application.job.title }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{ application.job.company }}</h6>
+        
+        <p class="card-text">
+            <strong>Status:</strong> 
+            <span class="badge bg-{{ application.status|lower }}">
+                {{ application.get_status_display }}
+            </span>
+        </p>
+        
+        <p class="card-text"><strong>Applied on:</strong> {{ application.applied_at|date:"F d, Y" }}</p>
+        
+        {% if application.resume %}
+            <p class="card-text">
+                <strong>Resume:</strong> 
+                <a href="{{ application.resume.url }}" target="_blank">View Resume</a>
+            </p>
+        {% endif %}
+        
+        {% if application.cover_letter %}
+            <div class="card-text mt-3">
+                <strong>Cover Letter:</strong>
+                <p class="mt-2">{{ application.cover_letter|linebreaks }}</p>
+            </div>
+        {% endif %}
+        
+        {% for doc in application.get_additional_documents %}
+            {% if doc %}
+                <p class="card-text">
+                    <strong>{{ doc.name }}:</strong> 
+                    <a href="{{ doc.url }}" target="_blank">View Document</a>
+                </p>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+{% if user.is_staff or user.is_superuser %}
+    <div class="mt-4">
+        <a href="{% url 'update_application_status' application.id %}" class="btn btn-primary">
+            <i class="fas fa-edit btn-icon"></i>Update Status
+        </a>
+    </div>
+{% endif %}
+
+<div class="mt-4">
+    {% if user.is_staff or user.is_superuser %}
+        <a href="{% url 'admin_application_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left btn-icon"></i>Back to Applications
+        </a>
+    {% else %}
+        <a href="{% url 'application_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left btn-icon"></i>Back to My Applications
+        </a>
+    {% endif %}
+</div>
+{% endblock %}

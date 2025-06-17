@@ -1,0 +1,145 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block content_title %}
+<h1>Appointment Management</h1>
+{% endblock %}
+
+{% block content %}
+<div class="appointments">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form method="get" class="form-inline">
+                <div class="input-group">
+                    <select name="status" class="form-select">
+                        <option value="">All Statuses</option>
+                        {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="service" class="form-select">
+                        <option value="">All Services</option>
+                        {% for service in services %}
+                        <option value="{{ service.id }}" {% if service_filter == service.id|stringformat:"s" %}selected{% endif %}>{{ service.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="{% url 'admin:appointments_service_add' %}" class="btn btn-success">Add New Service</a>
+        </div>
+    </div>
+
+    <form method="post" action="{% url 'admin:appointments_appointment_changelist' %}">
+        {% csrf_token %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Service</th>
+                        <th>Requested</th>
+                        <th>Approved</th>
+                        <th>Status</th>
+                        <th>Code</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in page_obj %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'admin:appointments_appointment_change' appointment.id %}">
+                                {{ appointment.client_name }}
+                            </a>
+                            <div class="small text-muted">{{ appointment.client_email }}</div>
+                            <div class="small">{{ appointment.client_phone }}</div>
+                        </td>
+                        <td>{{ appointment.service }}</td>
+                        <td>
+                            {{ appointment.requested_date|date:"M j" }}<br>
+                            {{ appointment.requested_time|time:"g:i A" }}
+                        </td>
+                        <td>
+                            {% if appointment.approved_date %}
+                                {{ appointment.approved_date|date:"M j" }}<br>
+                                {{ appointment.approved_time|time:"g:i A" }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge 
+                                {% if appointment.status == 'approved' %}bg-success
+                                {% elif appointment.status == 'rejected' %}bg-danger
+                                {% elif appointment.status == 'pending' %}bg-warning text-dark
+                                {% elif appointment.status == 'completed' %}bg-info
+                                {% else %}bg-secondary{% endif %}">
+                                {{ appointment.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ appointment.booking_code|default:"-" }}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                {% if appointment.status == 'pending' %}
+                                    <a href="{% url 'approve_appointment' appointment.id %}" class="btn btn-success">Approve</a>
+                                    <a href="{% url 'reject_appointment' appointment.id %}" class="btn btn-danger">Reject</a>
+                                {% elif appointment.status == 'approved' %}
+                                    <a href="{% url 'complete_appointment' appointment.id %}" class="btn btn-info">Complete</a>
+                                    <a href="{% url 'cancel_appointment' appointment.id %}" class="btn btn-warning">Cancel</a>
+                                {% endif %}
+                                {% if appointment.client_phone %}
+                                    <a href="https://wa.me/{{ appointment.client_phone|cut:' '|cut:'+' }}" 
+                                       target="_blank" class="btn btn-dark">WhatsApp</a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-4">
+                <div class="actions">
+                    {{ block.super }}
+                </div>
+            </div>
+            <div class="col-md-8">
+                {% if page_obj.has_other_pages %}
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-end">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1{% if status_filter %}&status={{ status_filter }}{% endif %}{% if service_filter %}&service={{ service_filter }}{% endif %}">&laquo; First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if service_filter %}&service={{ service_filter }}{% endif %}">Previous</a>
+                        </li>
+                        {% endif %}
+
+                        <li class="page-item disabled">
+                            <span class="page-link">
+                                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                            </span>
+                        </li>
+
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if service_filter %}&service={{ service_filter }}{% endif %}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if service_filter %}&service={{ service_filter }}{% endif %}">Last &raquo;</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}My Applications{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">My Applications</h1>
+
+{% if page_obj %}
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% for application in page_obj %}
+            <div class="col">
+                <div class="card h-100 application-card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ application.job.title }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ application.job.company }}</h6>
+                        <p class="card-text">
+                            <strong>Status:</strong> 
+                            <span class="badge bg-{{ application.status|lower }}">
+                                {{ application.get_status_display }}
+                            </span>
+                        </p>
+                        <p class="card-text"><small class="text-muted">Applied on {{ application.applied_at|date:"F d, Y" }}</small></p>
+                        <a href="{% url 'application_detail' application.id %}" class="btn btn-primary">
+                            <i class="fas fa-eye btn-icon"></i>View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if page_obj.has_other_pages %}
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+                    </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% else %}
+    <div class="alert alert-info" role="alert">
+        You haven't submitted any applications yet.
+    </div>
+{% endif %}
+{% endblock %}

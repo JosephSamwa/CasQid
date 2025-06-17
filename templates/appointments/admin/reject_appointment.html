@@ -1,0 +1,39 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-danger text-white">
+        <h2 class="mb-0">Reject Appointment</h2>
+    </div>
+    <div class="card-body">
+        <div class="mb-4">
+            <h4>Appointment Details</h4>
+            <ul>
+                <li><strong>Client:</strong> {{ appointment.client_name }}</li>
+                <li><strong>Service:</strong> {{ appointment.service }}</li>
+                <li><strong>Requested:</strong> {{ appointment.requested_date|date:"M j, Y" }} at {{ appointment.requested_time|time:"g:i A" }}</li>
+                <li><strong>Contact:</strong> {{ appointment.client_phone }} / {{ appointment.client_email }}</li>
+            </ul>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="{{ form.rejection_reason.id_for_label }}" class="form-label">Reason for Rejection</label>
+                {{ form.rejection_reason }}
+                {% if form.rejection_reason.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.rejection_reason.errors|join:", " }}
+                    </div>
+                {% endif %}
+                <div class="form-text">This reason will be sent to the client.</div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'admin_appointment_list' %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-danger">Confirm Rejection</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

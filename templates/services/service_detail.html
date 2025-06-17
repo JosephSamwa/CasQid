@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ service.name }} - CasQid Travels{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Brand colors (matching base template) */
+    :root {
+        --primary-color: #C21CC2;
+        --secondary-color: #007A8A;
+        --text-gray: #808080;
+        --text-color: #4A4A4A;
+    }
+    
+    .service-hero {
+        background: linear-gradient(rgba(0, 122, 138, 0.9), rgba(194, 28, 194, 0.8));
+        padding: 4rem 0;
+        color: white;
+        margin-top: -3rem;
+    }
+    
+    .service-image-container {
+        height: 400px;
+        overflow: hidden;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .service-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .service-icon {
+        font-size: 3rem;
+        width: 100px;
+        height: 100px;
+        line-height: 100px;
+        border-radius: 50%;
+        margin: 0 auto 1.5rem;
+        text-align: center;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+    }
+    
+    .detail-card {
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        margin-bottom: 1.5rem;
+    }
+    
+    .section-heading {
+        position: relative;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+    }
+    
+    .section-heading:after {
+        content: '';
+        position: absolute;
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        bottom: -10px;
+        left: 0;
+    }
+    
+    .cta-section {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        padding: 3rem 0;
+        color: white;
+        border-radius: 1rem;
+        margin-top: 2rem;
+    }
+    
+    .cta-btn {
+        background: white;
+        color: var(--primary-color);
+        border: none;
+        border-radius: 2rem;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .cta-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(255,255,255,0.2);
+        color: var(--primary-color);
+    }
+    
+    .created-date {
+        color: var(--text-gray);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="service-hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-5 fw-bold mb-3">{{ service.name }}</h1>
+                <p class="lead mb-0">{{ service.short_description|default:'' }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            {% if service.image %}
+            <div class="service-image-container mb-4">
+                <img src="{{ service.image.url }}" alt="{{ service.name }}" class="service-image">
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <div class="service-icon">
+                    <i class="fas {{ service.icon|default:'fa-globe' }}"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Service Details -->
+            <div class="detail-card p-4 mb-4">
+                <h3 class="section-heading">About This Service</h3>
+                <div class="service-description">
+                    {{ service.description|linebreaks }}
+                </div>
+                
+                {% if service.created_at %}
+                <p class="created-date mt-4">
+                    Service added on {{ service.created_at|date:"F d, Y" }}
+                </p>
+                {% endif %}
+            </div>
+            
+            <!-- Additional information or benefits -->
+            <div class="detail-card p-4">
+                <h3 class="section-heading">Benefits</h3>
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3 text-primary">
+                                <i class="fas fa-check-circle fa-lg"></i>
+                            </div>
+                            <div>Personalized assistance</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3 text-primary">
+                                <i class="fas fa-check-circle fa-lg"></i>
+                            </div>
+                            <div>Professional guidance</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3 text-primary">
+                                <i class="fas fa-check-circle fa-lg"></i>
+                            </div>
+                            <div>Expert consultation</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3 text-primary">
+                                <i class="fas fa-check-circle fa-lg"></i>
+                            </div>
+                            <div>Timely support</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Sidebar -->
+            <div class="sticky-lg-top" style="top: 100px;">
+                <!-- CTA Card -->
+                <div class="detail-card p-4 mb-4 text-center">
+                    <h4 class="mb-3">Interested in this service?</h4>
+                    <p class="mb-4">Contact us today to learn more about how we can assist you.</p>
+                    <a href="{% url 'contact' %}" class="btn btn-primary w-100">
+                        <i class="fas fa-envelope me-2"></i>Inquire Now
+                    </a>
+                </div>
+                
+                <!-- Other Services -->
+                <div class="detail-card p-4">
+                    <h4 class="mb-3">Other Services</h4>
+                    <ul class="list-unstyled">
+                        {% for other_service in services %}
+                            {% if other_service.id != service.id %}
+                                <li class="mb-3 pb-3 {% if not forloop.last %}border-bottom{% endif %}">
+                                    <a href="{% url 'service_detail' other_service.id %}" class="text-decoration-none">
+                                        <div class="fw-semibold text-primary">{{ other_service.name }}</div>
+                                        <div class="small text-muted">{{ other_service.description|truncatechars:60 }}</div>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CTA Section -->
+    <div class="cta-section mt-5 px-4 text-center">
+        <div class="container py-3">
+            <h3 class="mb-4">Ready to Get Started?</h3>
+            <p class="mb-4">Let CasQid Travels help you achieve your global aspirations.</p>
+            <a href="{% url 'contact' %}" class="btn cta-btn">
+                <i class="fas fa-paper-plane me-2"></i>Contact Us
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

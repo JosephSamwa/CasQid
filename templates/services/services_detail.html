@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+    {% if service.image %}
+        <img src="{{ service.image.url }}" alt="{{ service.name }}" class="w-full h-64 object-cover rounded">
+    {% endif %}
+    
+    <h1 class="text-2xl font-bold mt-4">{{ service.name }}</h1>
+    <p class="text-gray-700 mt-2">{{ service.description }}</p>
+
+    {% if service.requirements.all %}
+        <h2 class="text-lg font-semibold mt-4">Requirements</h2>
+        <ul class="list-disc ml-6 text-gray-600">
+            {% for req in service.requirements.all %}
+                <li>{{ req.name }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="mt-4">
+        <p class="text-lg font-bold text-green-600">
+            {% if service.cost %}
+                Cost: Ksh {{ service.cost }}
+            {% else %}
+                Contact for Pricing
+            {% endif %}
+        </p>
+        {% if service.duration %}
+            <p class="text-sm text-gray-500"><strong>Duration:</strong> {{ service.duration }}</p>
+        {% endif %}
+    </div>
+
+    {% if service.available %}
+        <p class="text-sm text-green-600 font-semibold mt-2">This service is available.</p>
+    {% else %}
+        <p class="text-sm text-red-600 font-semibold mt-2">Currently not available.</p>
+    {% endif %}
+</div>
+{% endblock %}

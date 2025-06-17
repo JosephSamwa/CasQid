@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Your Appointment Status</h2>
+            </div>
+            <div class="card-body">
+                {% if appointments %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Service</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                    <th>Booking Code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for appointment in appointments %}
+                                <tr>
+                                    <td>{{ appointment.service.name }}</td>
+                                    <td>
+                                        {% if appointment.approved_date %}
+                                            {{ appointment.approved_date|date:"M j, Y" }}
+                                        {% else %}
+                                            {{ appointment.requested_date|date:"M j, Y" }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if appointment.approved_time %}
+                                            {{ appointment.approved_time|time:"g:i A" }}
+                                        {% else %}
+                                            {{ appointment.requested_time|time:"g:i A" }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if appointment.status == 'approved' %}bg-success
+                                            {% elif appointment.status == 'rejected' %}bg-danger
+                                            {% elif appointment.status == 'pending' %}bg-warning text-dark
+                                            {% elif appointment.status == 'completed' %}bg-info
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ appointment.get_status_display }}
+                                        </span>
+                                        {% if appointment.status == 'rejected' and appointment.rejection_reason %}
+                                            <div class="mt-1 small text-muted">{{ appointment.rejection_reason }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ appointment.booking_code|default:"-" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        No appointments found. Please check your email or booking code and try again.
+                    </div>
+                    <a href="{% url 'appointment_tracking' %}" class="btn btn-primary">Try Again</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

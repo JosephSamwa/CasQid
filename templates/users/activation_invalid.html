@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid</title>
+    <style>
+    .message-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f4f4f9;
+        padding: 20px;
+    }
+
+    .message-box {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        max-width: 500px;
+        text-align: center;
+        border-left: 5px solid #e74c3c; /* Red border to indicate error */
+    }
+
+    .icon-container {
+        margin-bottom: 20px;
+    }
+
+    .error-icon {
+        width: 50px;
+        height: 50px;
+        stroke: #e74c3c; /* Red color for error */
+    }
+
+    .message-box h2 {
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .message-box p {
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    .button-container {
+        margin-top: 20px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #fff;
+        background-color: #4CAF50; /* Green color for primary button */
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #45a049; /* Darker green on hover */
+    }
+    </style>
+</head>
+<body>
+<div class="message-container">
+    <div class="message-box">
+        <div class="icon-container">
+            <svg class="error-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L2 22h20L12 2z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>            
+        </div>
+        <h2>Verification Link Invalid</h2>
+        <p>Sorry, the verification link you used is invalid or has expired. Please try registering again or contact support for assistance.</p>
+        <div class="button-container">
+            <a href="{% url 'register' %}" class="btn">Register Again</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

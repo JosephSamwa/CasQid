@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Application Requirements - {{ job.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #C21CC2; /* Magenta from the logo */
+        --secondary-color: #007A8A; /* Teal from the logo */
+        --background-color: #f3f4f6;
+        --card-background: #ffffff;
+        --text-color: #1f2937;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .requirements-hero {
+        background: linear-gradient(rgba(0, 122, 138, 0.9), rgba(194, 28, 194, 0.8));
+        padding: 4rem 0;
+        color: white;
+        margin-top: -3rem;
+    }
+
+    .requirement-card {
+        border: none;
+        border-radius: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .requirement-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .commission-alert {
+        background: rgba(194, 28, 194, 0.1);
+        border-left: 4px solid var(--primary-color);
+    }
+
+    .proceed-btn {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .proceed-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(194, 28, 194, 0.3);
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        body {
+            padding: 1rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+        }
+
+        .documents-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="requirements-hero mb-5">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">Application Requirements</h1>
+        <p class="lead mb-0">{{ job.title }} at {{ job.company }}</p>
+    </div>
+</section>
+
+<div class="container py-5">
+    <!-- Commission Fee Alert -->
+    <div class="alert commission-alert mb-5">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-info-circle fa-2x me-3"></i>
+            <div>
+                <h5 class="mb-1">Commission Fee</h5>
+                <p class="mb-0">This job requires a commission fee of KES {{ formatted_commission_fee }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Required Documents -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card requirement-card h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Required Documents</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Updated CV/Resume (PDF format)
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Certificate of Good Conduct (PDF format)
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Academic Certificates (PDF format)
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Passport Copy (PDF format)
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Passport Size Photo (JPG/PNG format)
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card requirement-card h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Important Notes</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-3 d-flex align-items-start">
+                            <i class="fas fa-info-circle text-primary me-2 mt-1"></i>
+                            <span>All documents must be clear and legible</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-start">
+                            <i class="fas fa-info-circle text-primary me-2 mt-1"></i>
+                            <span>Maximum file size: 5MB per document</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-start">
+                            <i class="fas fa-info-circle text-primary me-2 mt-1"></i>
+                            <span>Documents should be recent (not older than 6 months)</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-start">
+                            <i class="fas fa-info-circle text-primary me-2 mt-1"></i>
+                            <span>Commission fee is payable after document verification</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="text-center">
+        <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+            {% if user.is_authenticated %}
+                <a href="{% url 'apply' job.id %}" class="btn proceed-btn">
+                    <i class="fas fa-file-upload me-2"></i>Proceed to Application
+                </a>
+            {% else %}
+                <a href="{% url 'login' %}?next={% url 'apply' job.id %}" class="btn proceed-btn">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login to Apply
+                </a>
+            {% endif %}
+            <a href="{% url 'job_detail' job.id %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Job Details
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

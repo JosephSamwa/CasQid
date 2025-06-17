@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Book an Appointment</h2>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.service.id_for_label }}" class="form-label">Service</label>
+                        {{ form.service }}
+                        {% if form.service.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.service.errors|join:", " }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.client_name.id_for_label }}" class="form-label">Full Name</label>
+                            {{ form.client_name }}
+                            {% if form.client_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.client_name.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.client_email.id_for_label }}" class="form-label">Email</label>
+                            {{ form.client_email }}
+                            {% if form.client_email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.client_email.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.client_phone.id_for_label }}" class="form-label">Phone Number</label>
+                            {{ form.client_phone }}
+                            {% if form.client_phone.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.client_phone.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.requested_date.id_for_label }}" class="form-label">Preferred Date</label>
+                            {{ form.requested_date }}
+                            {% if form.requested_date.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.requested_date.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.requested_time.id_for_label }}" class="form-label">Preferred Time</label>
+                        {{ form.requested_time }}
+                        {% if form.requested_time.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.requested_time.errors|join:", " }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.notes.id_for_label }}" class="form-label">Additional Notes</label>
+                        {{ form.notes }}
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Submit Appointment Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

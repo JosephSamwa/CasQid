@@ -1,0 +1,532 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}CasQid Travel Agency{% endblock %}
+{% block extra_css %}
+<style>
+    /* Base Styles */
+    :root {
+        --primary-color: #C21CC2;
+        --secondary-color: #007A8A;
+        --text-gray: #808080;
+        --text-color: #4A4A4A;
+    }
+    
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(rgba(0, 122, 138, 0.9), rgba(194, 28, 194, 0.8)),
+                    url('https://img.freepik.com/free-photo/big-ben-westminster-bridge-sunset-london-uk_268835-1395.jpg') center/cover;
+        padding: 8rem 0 6rem;
+        margin-top: -3rem;
+        color: white;
+        position: relative;
+    }
+    
+    /* Card & Section Styles */
+    .section-heading {
+        position: relative;
+        margin-bottom: 2.5rem;
+        font-weight: 700;
+    }
+    
+    .section-heading:after {
+        content: '';
+        position: absolute;
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .feature-card {
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 2rem;
+        z-index: 2;
+    }
+    
+    .country-flag {
+        width: 2rem;
+        height: auto;
+        border-radius: 0.2rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    /* Stats Section */
+    .stats-section {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 5rem 0;
+    }
+    
+    .stat-card {
+        text-align: center;
+        padding: 2rem 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 1rem;
+        transition: transform 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-10px);
+    }
+    
+    .stat-number {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        background: white;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    /* Testimonial styles */
+    .testimonial-card {
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    .testimonial-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    
+    .testimonial-img {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        border: 3px solid var(--primary-color);
+        object-fit: cover;
+    }
+    
+    /* Services Section */
+    .service-card {
+        text-align: center;
+        padding: 2rem;
+        border-radius: 1rem;
+        background: white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+    
+    .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    
+    .service-icon {
+        font-size: 2.5rem;
+        width: 80px;
+        height: 80px;
+        line-height: 80px;
+        border-radius: 50%;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+    }
+    
+    /* Partner Logos */
+    .partner-logo {
+        max-width: 120px;
+        max-height: 120px;
+        transition: all 0.3s ease;
+    }
+    
+    .partner-logo:hover {
+        transform: scale(1.1);
+    }
+    
+    /* Contact section */
+    .contact-card {
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    .contact-info-item {
+        margin-bottom: 1.5rem;
+    }
+    
+    .contact-icon {
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        font-size: 1.2rem;
+        margin-right: 1rem;
+    }
+    
+    .map-container {
+        overflow: hidden;
+        border-radius: 1rem;
+        height: 100%;
+        min-height: 400px;
+    }
+    
+    /* Custom animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .fade-in-up {
+        animation: fadeInUp 1s ease-out;
+    }
+    
+    .fade-in-up-delay-1 {
+        animation: fadeInUp 1s ease-out 0.2s both;
+    }
+    
+    .fade-in-up-delay-2 {
+        animation: fadeInUp 1s ease-out 0.4s both;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section d-flex align-items-center text-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4 fade-in-up">Explore Global Opportunities</h1>
+                <p class="lead mb-5 fade-in-up-delay-1">Your journey to international success starts with CasQid Travels, your trusted partner for global career advancement and life-changing experiences.</p>
+                <div class="d-flex justify-content-center gap-3 fade-in-up-delay-2">
+                    <a href="{% url 'job_list' %}" class="btn btn-lg btn-light fw-semibold px-4 py-3">
+                        <i class="fas fa-search me-2"></i>Browse Jobs
+                    </a>
+                    <a href="{% url 'contact' %}" class="btn btn-lg btn-outline-light fw-semibold px-4 py-3">
+                        <i class="fas fa-envelope me-2"></i>Contact Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Jobs Section -->
+<section class="py-5 bg-light">
+    <div class="container py-5">
+        <h2 class="section-heading text-center mb-5">Featured Opportunities</h2>
+        <div class="row g-4">
+            {% for job in jobs|slice:":6" %}
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    {% if job == job_offer %}
+                    <span class="card-badge bg-danger text-white">Featured</span>
+                    {% endif %}
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="{{ job.country.flag_url }}" alt="{{ job.country.name }}" class="country-flag me-2">
+                            <span class="text-muted small">{{ job.country.name }}</span>
+                        </div>
+                        <h5 class="mb-3">{{ job.title }}</h5>
+                        <p class="text-muted mb-3 small">
+                            <i class="fas fa-building me-1"></i> {{ job.company }}
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-primary">{{ job.job_type }}</span>
+                            <a href="{% url 'job_detail' job.pk %}" class="btn btn-sm btn-outline-primary rounded-pill px-3">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-5">
+            <a href="{% url 'job_list' %}" class="btn btn-primary btn-lg rounded-pill px-4">
+                <i class="fas fa-arrow-right me-2"></i>View All Jobs
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="py-5">
+    <div class="container py-5">
+        <h2 class="section-heading text-center mb-5">Our Services</h2>
+        <div class="row g-4">
+            {% for service in services %}
+            <div class="col-md-6 col-lg-3">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas {{ service.icon }}"></i>
+                    </div>
+                    <h5 class="mb-3">{{ service.name }}</h5>
+                    <p class="text-muted mb-0">{{ service.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container py-4">
+        <h2 class="text-center text-white mb-5">Our Impact</h2>
+        <div class="row g-4">
+            {% for stat in all_stats %}
+            <div class="col-md-{% if all_stats.count < 4 %}{{ 12|divisibleby:all_stats.count }}{% else %}3{% endif %}">
+                <div class="stat-card">
+                    <div class="stat-number" id="{{ stat.name|lower|cut:" "|cut:"." }}-count">{{ stat.value }}</div>
+                    <h5 class="text-white mb-0">{{ stat.name }}</h5>
+                    {% if stat.icon %}
+                    <div class="mt-2">
+                        <i class="fas {{ stat.icon }} text-white-50"></i>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <!-- Default stats if none exist in database -->
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-number" id="clients-count">{{ stats.clients_count }}</div>
+                    <h5 class="text-white mb-0">Satisfied Clients</h5>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-number" id="jobs-count">{{ stats.jobs_count }}</div>
+                    <h5 class="text-white mb-0">Job Placements</h5>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-number" id="countries-count">{{ stats.countries_count }}</div>
+                    <h5 class="text-white mb-0">Countries Worldwide</h5>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5 bg-light">
+    <div class="container py-5">
+        <h2 class="section-heading text-center mb-5">What Our Clients Say</h2>
+        <div class="row g-4">
+            {% for testimonial in testimonials %}
+            <div class="col-md-6 col-lg-4">
+                <div class="testimonial-card">
+                    <div class="card-body p-4">
+                        <div class="mb-4">
+                            <i class="fas fa-quote-left fa-2x text-primary opacity-25"></i>
+                        </div>
+                        <p class="mb-4">{{ testimonial.content }}</p>
+                        <div class="d-flex align-items-center">
+                            <img src="{{ testimonial.user_image.url|default:'/static/images/logo.jpg' }}" alt="{{ testimonial.name }}" class="testimonial-img me-3">
+                            <div>
+                                <h6 class="mb-0">{{ testimonial.name }}</h6>
+                                <p class="text-muted small mb-0">{{ testimonial.role }}</p>
+                                <div class="text-warning">
+                                    {% for i in "12345"|make_list %}
+                                    <i class="fas fa-star{% if forloop.counter > testimonial.rating %}-o{% endif %} small"></i>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-4">
+                <p class="text-muted mb-0">No testimonials yet. Be the first to share your experience!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Partners Section -->
+<section class="py-5">
+    <div class="container py-5">
+        <div class="row g-4 align-items-center justify-content-center">
+            {% for partner in partners %}
+            <div class="col-6 col-md-3 text-center">
+                <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" class="partner-logo img-fluid">
+                <p class="mt-3 text-muted small">{{ partner.name }}</p>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-muted">No partners available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="py-5 bg-light">
+    <div class="container py-5">
+        <h2 class="section-heading text-center mb-5">Get In Touch</h2>
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="contact-card h-100">
+                    <div class="card-body p-4">
+                        <h4 class="mb-4">Contact Information</h4>
+                        <div class="contact-info-item d-flex align-items-center">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Our Location</h6>
+                                <p class="mb-0 text-muted">Diamond Plaza 1, Nairobi, Kenya</p>
+                            </div>
+                        </div>
+                        <div class="contact-info-item d-flex align-items-center">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Email Address</h6>
+                                <p class="mb-0 text-muted">info@casqidtravels.com</p>
+                            </div>
+                        </div>
+                        <div class="contact-info-item d-flex align-items-center">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Phone Number</h6>
+                                <p class="mb-0 text-muted">+254 722 201510</p>
+                            </div>
+                        </div>
+                        <div class="contact-info-item d-flex align-items-center">
+                            <div class="contact-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Office Hours</h6>
+                                <p class="mb-0 text-muted">Monday - Friday: 9:00 AM - 5:00 PM</p>
+                                <p class="mb-0 text-muted">Saturday: 9:00 AM - 1:00 PM</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <a href="{% url 'contact' %}" class="btn btn-primary rounded-pill px-4">Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="map-container">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.0727299950345!2d36.81655684442661!3d-1.2593348973100564!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f171b71d96ab1%3A0x85adbff8dd9b15c7!2sDiamond%20Plaza%201!5e0!3m2!1sen!2ske!4v1741458644634!5m2!1sen!2ske"
+                        class="w-100 h-100"
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5" style="background: linear-gradient(rgba(0, 122, 138, 0.9), rgba(194, 28, 194, 0.8));">
+    <div class="container py-5 text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h2 class="text-white mb-4">Ready to Start Your Global Journey?</h2>
+                <p class="text-white-50 mb-5">Let CasQid Travels guide you to exciting opportunities and memorable experiences abroad.</p>
+                <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                    <a href="{% url 'job_list' %}" class="btn btn-light btn-lg rounded-pill px-4">
+                        <i class="fas fa-search me-2"></i>Browse Jobs
+                    </a>
+                    <a href="{% url 'contact' %}" class="btn btn-outline-light btn-lg rounded-pill px-4">
+                        <i class="fas fa-envelope me-2"></i>Get in Touch
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animated counter function
+        function animateCounter(element, target) {
+            const duration = 2000;
+            const frameRate = 60;
+            const frameDuration = 1000 / frameRate;
+            const totalFrames = Math.round(duration / frameDuration);
+            let frame = 0;
+            
+            const counter = setInterval(() => {
+                frame++;
+                const progress = frame / totalFrames;
+                const currentCount = Math.round(progress * target);
+                
+                if (frame === totalFrames) {
+                    clearInterval(counter);
+                    element.textContent = target.toLocaleString();
+                } else {
+                    element.textContent = currentCount.toLocaleString();
+                }
+            }, frameDuration);
+        }
+        
+        // Intersection Observer for stats animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = parseInt(entry.target.textContent.replace(/,/g, ''));
+                    if (!isNaN(target)) {
+                        animateCounter(entry.target, target);
+                    }
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        // Observe all counter elements
+        document.querySelectorAll('.stat-number').forEach(counter => {
+            observer.observe(counter);
+        });
+    });
+</script>
+{% endblock %}

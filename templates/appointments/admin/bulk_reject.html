@@ -1,0 +1,59 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-danger text-white">
+        <h2 class="mb-0">Bulk Reject Appointments</h2>
+    </div>
+    <div class="card-body">
+        <p>You are about to reject the following {{ appointments|length }} appointments:</p>
+        
+        <div class="table-responsive mb-4">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>Service</th>
+                        <th>Requested Date/Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in appointments %}
+                    <tr>
+                        <td>{{ appointment.client_name }}</td>
+                        <td>{{ appointment.service }}</td>
+                        <td>
+                            {{ appointment.requested_date|date:"M j, Y" }}<br>
+                            {{ appointment.requested_time|time:"g:i A" }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <form method="post" action="">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="{{ form.rejection_reason.id_for_label }}" class="form-label">Reason for Rejection</label>
+                {{ form.rejection_reason }}
+                {% if form.rejection_reason.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.rejection_reason.errors|join:", " }}
+                    </div>
+                {% endif %}
+                <div class="form-text">This reason will be sent to all clients.</div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'admin_appointment_list' %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" name="apply" class="btn btn-danger">Reject All</button>
+            </div>
+            
+            {% for appointment in appointments %}
+            <input type="hidden" name="_selected_action" value="{{ appointment.pk }}">
+            {% endfor %}
+        </form>
+    </div>
+</div>
+{% endblock %}

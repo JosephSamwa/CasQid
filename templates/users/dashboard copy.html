@@ -1,0 +1,249 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: #f4f6f8;
+            --text-color: #333;
+            --border-color: #e0e0e0;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .dashboard-header {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .dashboard-header h1 {
+            margin: 0;
+            color: var(--primary-color);
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .dashboard-card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .dashboard-card h2 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .stat {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress {
+            width: 0;
+            height: 20px;
+            background-color: var(--secondary-color);
+            transition: width 0.5s ease-in-out;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="dashboard-header">
+            <h1>Welcome, {{ user.username }}</h1>
+            <p>Last login: {{ user.last_login|date:"F d, Y H:i" }}</p>
+        </header>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h2>Profile Completion</h2>
+                <div class="progress-bar">
+                    <div class="progress" style="width: {{ profile_completion_percentage }}%;"></div>
+                </div>
+                <p>{{ profile_completion_percentage }}% complete</p>
+                {% if not is_profile_complete %}
+                    <a href="#update-profile" class="btn">Complete Your Profile</a>
+                {% endif %}
+            </div>
+
+            <div class="dashboard-card">
+                <h2>Application Statistics</h2>
+                <p><span class="stat">{{ total_applications }}</span> Total Applications</p>
+                <h3>Status Breakdown</h3>
+                <ul>
+                    {% for status in status_breakdown %}
+                        <li>{{ status.status }}: {{ status.count }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="dashboard-card">
+                <h2>Recent Applications</h2>
+                <ul>
+                    {% for application in recent_applications %}
+                        <li>{{ application.job.title }} - {{ application.applied_at|date:"F d, Y" }}</li>
+                    {% endfor %}
+                </ul>
+                <a href="#all-applications" class="btn">View All Applications</a>
+            </div>
+
+            <div class="dashboard-card">
+                <h2>Payment Summary</h2>
+                <p><span class="stat">{{ total_paid }}</span> Total Paid</p>
+                <h3>Payment Stats</h3>
+                <ul>
+                    <li>Completed: {{ payment_stats.completed }}</li>
+                    <li>Pending: {{ payment_stats.pending }}</li>
+                    <li>Failed: {{ payment_stats.failed }}</li>
+                    <li>Last 30 days: {{ payment_stats.recent }}</li>
+                </ul>
+            </div>
+
+            {% if suggested_jobs %}
+                <div class="dashboard-card">
+                    <h2>Suggested Jobs</h2>
+                    <ul>
+                        {% for job in suggested_jobs %}
+                            <li>{{ job.title }} - {{ job.company }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="dashboard-card" id="all-applications">
+            <h2>All Applications</h2>
+            <form method="get" action="{% url 'dashboard' %}">
+                {{ filter_form.as_p }}
+                <button type="submit" class="btn">Filter</button>
+            </form>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Company</th>
+                        <th>Status</th>
+                        <th>Applied Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for application in page_obj %}
+                        <tr>
+                            <td>{{ application.job.title }}</td>
+                            <td>{{ application.job.company }}</td>
+                            <td>{{ application.status }}</td>
+                            <td>{{ application.applied_at|date:"F d, Y" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if page_obj.has_other_pages %}
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <strong>{{ num }}</strong>
+                        {% else %}
+                            <a href="?page={{ num }}">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">Next &raquo;</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="dashboard-card" id="update-profile">
+            <h2>Update Profile</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ profile_form.as_p }}
+                <button type="submit" name="update_profile" class="btn">Update Profile</button>
+            </form>
+        </div>
+
+        <div class="dashboard-card">
+            <h2>Change Password</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ password_form.as_p }}
+                <button type="submit" name="change_password" class="btn">Change Password</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressBar = document.querySelector('.progress');
+            progressBar.style.width = '{{ profile_completion_percentage }}%';
+        });
+    </script>
+</body>
+</html>

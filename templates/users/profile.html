@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ user.username }}'s Profile - Travel{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <div class="p-6">
+        <div class="flex items-center mb-6">
+            {% if user.profile_image %}
+            <img src="{{ user.profile_image.url }}" alt="{{ user.username }}" class="w-20 h-20 rounded-full mr-4">
+            {% else %}
+            <div class="w-20 h-20 rounded-full bg-gray-300 flex items-center justify-center mr-4">
+                <span class="text-2xl text-gray-600">{{ user.username|first|upper }}</span>
+            </div>
+            {% endif %}
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">{{ user.get_full_name }}</h1>
+                <p class="text-gray-600">@{{ user.username }}</p>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-2">About Me</h2>
+            <p class="text-gray-600">{{ user.bio }}</p>
+        </div>
+
+        <div class="mb-6">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-2">Travel Preferences</h2>
+            <ul class="list-disc list-inside text-gray-600">
+                {% for preference in user.travel_preferences %}
+                <li>{{ preference }}</li>
+                {% empty %}
+                <li>No travel preferences set yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="mb-6">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-2">Upcoming Trips</h2>
+            {% for trip in user.trips.all %}
+            <div class="mb-4 p-4 bg-gray-50 rounded-md">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ trip.name }}</h3>
+                <p class="text-gray-600 mb-2">{{ trip.description|truncatewords:20 }}</p>
+                <div class="flex items-center text-gray-600">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    {{ trip.start_date|date:"M d, Y" }} - {{ trip.end_date|date:"M d, Y" }}
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-gray-600">No upcoming trips.</p>
+            {% endfor %}
+        </div>
+
+        <div>
+            <h2 class="text-2xl font-semibold text-gray-900 mb-2">Account Settings</h2>
+            <a href="{% url 'edit_profile' %}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Edit Profile</a>
+            <a href="{% url 'change_password' %}" class="inline-block bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 ml-2">Change Password</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

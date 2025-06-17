@@ -1,0 +1,80 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-success text-white">
+        <h2 class="mb-0">Bulk Approve Appointments</h2>
+    </div>
+    <div class="card-body">
+        <p>You are about to approve the following {{ appointments|length }} appointments:</p>
+        
+        <div class="table-responsive mb-4">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>Service</th>
+                        <th>Requested Date/Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in appointments %}
+                    <tr>
+                        <td>{{ appointment.client_name }}</td>
+                        <td>{{ appointment.service }}</td>
+                        <td>
+                            {{ appointment.requested_date|date:"M j, Y" }}<br>
+                            {{ appointment.requested_time|time:"g:i A" }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <form method="post" action="">
+            {% csrf_token %}
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="{{ form.approved_date.id_for_label }}" class="form-label">Approved Date</label>
+                    {{ form.approved_date }}
+                    {% if form.approved_date.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.approved_date.errors|join:", " }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label for="{{ form.approved_time.id_for_label }}" class="form-label">Approved Time</label>
+                    {{ form.approved_time }}
+                    {% if form.approved_time.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.approved_time.errors|join:", " }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'admin_appointment_list' %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" name="apply" class="btn btn-success">Approve All</button>
+            </div>
+            
+            {% for appointment in appointments %}
+            <input type="hidden" name="_selected_action" value="{{ appointment.pk }}">
+            {% endfor %}
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set minimum date to today
+    const dateField = document.getElementById('{{ form.approved_date.id_for_label }}');
+    const today = new Date().toISOString().split('T')[0];
+    dateField.min = today;
+});
+</script>
+{% endblock %}

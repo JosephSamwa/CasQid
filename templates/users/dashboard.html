@@ -1,0 +1,855 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ user.username }} -Dashboard {% endblock %}
+
+{% block extra_css %}
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: #f4f6f8;
+            --text-color: #333;
+            --border-color: #e0e0e0;
+            --card-bg: white;
+            --completed-color: #2ecc71;
+            --pending-color: #f39c12;
+            --failed-color: #e74c3c;
+            --recent-color: #3498db;
+        }
+        * {
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        .dashboard-header {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            animation: fadeIn 0.7s ease;
+        }
+        @media (min-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .dashboard-header {
+                padding: 20px;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+        }
+        .dashboard-header h1 {
+            margin: 0;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .dashboard-header h1 {
+                font-size: 2rem;
+            }
+        }
+        .dashboard-header h1 i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        @media (min-width: 640px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 992px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+        }
+        .dashboard-card {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+            animation: fadeIn 0.7s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        @media (min-width: 768px) {
+            .dashboard-card {
+                padding: 20px;
+            }
+        }
+        .dashboard-card:hover {
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+        }
+        .dashboard-card h2 {
+            margin-top: 0;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            font-size: 1.25rem;
+        }
+        @media (min-width: 768px) {
+            .dashboard-card h2 {
+                font-size: 1.5rem;
+            }
+        }
+        .dashboard-card h2 i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        #all-applications{
+            margin-top: 8px;
+        }
+        .stat {
+            font-size: 1.75em;
+            font-weight: bold;
+            color: var(--secondary-color);
+            animation: pulse 2s infinite;
+        }
+        @media (min-width: 768px) {
+            .stat {
+                font-size: 2em;
+            }
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            background-color: var(--primary-color);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            font-size: 0.875rem;
+        }
+        @media (min-width: 768px) {
+            .btn {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+        }
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn i {
+            margin-right: 8px;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        #progress {
+            width: 0;
+            height: 10px;
+            background-color: var(--secondary-color);
+            transition: width 1s ease-in-out;
+        }
+        
+        .stats-header {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--text-color);
+        }
+
+        .stats-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .stats-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #eaeaea;
+            transition: background-color 0.3s ease;
+        }
+        @media (min-width: 768px) {
+            .stats-item {
+                padding: 15px;
+            }
+        }
+
+        .stats-item:last-child {
+            border-bottom: none;
+        }
+
+        .stats-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .stats-label {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .stats-value {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+        @media (min-width: 768px) {
+            .stats-value {
+                padding: 6px 12px;
+                font-size: 1rem;
+            }
+        }
+
+        .completed {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--completed-color);
+        }
+
+        .pending {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--pending-color);
+        }
+
+        .failed {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--failed-color);
+        }
+
+        .recent {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--recent-color);
+        }
+        .total-paid {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        @media (min-width: 768px) {
+            .total-paid {
+                font-size: 2.5em;
+            }
+        }
+
+        .total-paid-label {
+            color: var(--text-color);
+            font-size: 1em;
+        }
+        
+        /* Responsive table styles */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            min-width: 500px; /* Ensure minimum width for scrolling on small screens */
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.3s ease;
+            font-size: 0.875rem;
+        }
+        @media (min-width: 768px) {
+            th, td {
+                padding: 12px;
+                font-size: 1rem;
+            }
+        }
+        tr:hover {
+            background-color: rgba(46, 204, 113, 0.05);
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .pagination a, .pagination strong {
+            margin: 2px;
+            padding: 4px 8px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+        @media (min-width: 768px) {
+            .pagination a, .pagination strong {
+                margin: 0 5px;
+                padding: 5px 10px;
+            }
+        }
+        .pagination a:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+        .pagination strong {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Filter form responsiveness */
+        .filter-form-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        @media (min-width: 768px) {
+            .filter-form-fields {
+                flex-direction: row;
+                align-items: flex-end;
+            }
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        @media (min-width: 768px) {
+            .form-group {
+                flex-direction: row;
+                gap: 15px;
+            }
+        }
+        
+        /* Empty state styling */
+        .empty-state {
+            text-align: center;
+            padding: 30px 20px;
+            color: #888;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            color: #ccc;
+            display: block;
+            margin-bottom: 15px;
+        }
+        
+        .empty-state h3 {
+            margin: 0 0 10px 0;
+            color: #666;
+        }
+        
+        .empty-state p {
+            margin: 0 0 15px 0;
+        }
+        
+        /* Mobile tabs for dashboard sections */
+        .tab-navigation {
+            display: flex;
+            overflow-x: auto;
+            margin-bottom: 15px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+        }
+        
+        .tab-navigation::-webkit-scrollbar {
+            display: none; /* Chrome, Safari and Opera */
+        }
+        
+        .tab-button {
+            padding: 10px 15px;
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            white-space: nowrap;
+            margin-right: 5px;
+        }
+        
+        .tab-button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Full-width cards on mobile */
+        .full-width-card {
+            grid-column: 1 / -1;
+        }
+        
+        @media (min-width: 992px) {
+            .dashboard-card.tab-content {
+                display: block;
+            }
+            
+            .tab-navigation {
+                display: none;
+            }
+        }
+    </style>
+    {% endblock %}
+
+{% block content %}
+    <div class="container">
+        <header class="dashboard-header" style="background: rgba(255, 255, 255, 0.8)">
+            <h1>
+                <i class="ri-dashboard-3-line"></i>
+                {{ user.username }}
+            </h1>
+            <div class="dashboard-card" style="margin: 10px 0 0 0; width: 100%;">
+                <h2>
+                    <i class="ri-checkbox-circle-line"></i>
+                    Profile Completion
+                </h2>
+               
+                <div class="progress-bar">
+                    <div id="progress" style="width: {{ profile_completion_percentage }}%;"></div>
+                </div>
+                <p>{{ profile_completion_percentage }}% complete</p>
+                
+                {% if not is_profile_complete %}
+                <a href="{% url 'update_profile' %}" class="btn">
+                    <i class="ri-pencil-line"></i>
+                    Complete Your Profile
+                </a>
+                {% endif %}
+            </div>
+        </header>
+
+        <!-- Mobile Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-button active" data-tab="summary">Summary</button>
+            <button class="tab-button" data-tab="applications">Applications</button>
+            <button class="tab-button" data-tab="payments">Payments</button>
+            <button class="tab-button" data-tab="jobs">Recent Jobs</button>
+        </div>
+
+        <!-- Summary Dashboard Grid (shown by default on mobile) -->
+        <div id="summary" class="tab-content active">
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h2>
+                        <i class="ri-file-list-3-line"></i>
+                        Application Statistics
+                    </h2>
+                    <p><span class="stat">{{ total_applications }}</span> Total Applications</p>
+                    <ul class="stats-list">
+                        {% for status in status_breakdown %}
+                            <li class="stats-item">
+                                <span class="stats-label">{{ status.status }}</span>
+                                <span class="stats-value recent">{{ status.count }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="dashboard-card">
+                    <h2>
+                        <i class="ri-wallet-3-line"></i>
+                        Payment Summary
+                    </h2>
+                    <p>
+                        <span class="total-paid-label">Total Paid</span>
+                        <span class="total-paid">KES {{ total_paid|floatformat:2 }}</span>
+                    </p>
+
+                    <ul class="stats-list">
+                        <li class="stats-item">
+                            <span class="stats-label">Completed</span>
+                            <span class="stats-value completed">{{ payment_stats.completed }}</span>
+                        </li>
+                        <li class="stats-item">
+                            <span class="stats-label">Pending</span>
+                            <span class="stats-value pending">{{ payment_stats.pending }}</span>
+                        </li>
+                        <li class="stats-item">
+                            <span class="stats-label">Failed</span>
+                            <span class="stats-value failed">{{ payment_stats.failed }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="dashboard-card">
+                    <h2>
+                        <i class="ri-money-dollar-circle-line"></i>
+                        Payment Methods
+                    </h2>
+                    <ul class="stats-list">
+                        {% for method in payment_methods %}
+                        <li class="stats-item">
+                            <span class="stats-label">{{ method.payment_method|default:"Not specified" }}</span>
+                            <span class="stats-value recent">{{ method.count }}</span>
+                        </li>
+                        {% empty %}
+                        <li class="stats-item">
+                            <span class="stats-label">No payment methods recorded</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                {% if suggested_jobs %}
+                    <div class="dashboard-card">
+                        <h2>
+                            <i class="ri-search-eye-line"></i>
+                            Suggested Jobs
+                        </h2>
+                        <ul class="stats-list">
+                            {% for job in suggested_jobs %}
+                            <li class="stats-item">
+                                <span class="stats-label">{{ job.title }}</span>
+                                <a href="{% url 'job_detail' job.id %}" class="btn btn-sm">
+                                    <i class="ri-external-link-line"></i>
+                                    View
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Applications Tab -->
+        <div id="applications" class="tab-content full-width-card">
+            <div class="dashboard-card">
+                <h2>
+                    <i class="ri-list-check"></i>
+                    Applications
+                </h2>
+                
+                <form method="get" action="{% url 'dashboard' %}">
+                    <div class="filter-form-fields">
+                        <div class="form-group">
+                            <label for="{{ filter_form.status.id_for_label }}">Status</label>
+                            {{ filter_form.status }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ filter_form.job.id_for_label }}">Job</label>
+                            {{ filter_form.job }}
+                        </div>
+                        
+                        <button type="submit" class="btn">
+                            <i class="ri-filter-line"></i>
+                            Filter
+                        </button>
+                    </div>
+                </form>
+                
+                {% if filter_form.is_bound and page_obj|length == 0 %}
+                    <div class="empty-state">
+                        <i class="ri-search-line"></i>
+                        <h3>No Applications Found</h3>
+                        <p>Try changing your filter criteria or check back later</p>
+                        <a href="{% url 'dashboard' %}" class="btn">
+                            <i class="ri-refresh-line"></i>
+                            Clear Filters
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Company</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for application in page_obj %}
+                                    <tr>
+                                        <td>{{ application.job.title }}</td>
+                                        <td>{{ application.job.company }}</td>
+                                        <td>
+                                            <span class="stats-value 
+                                                {% if application.status == 'Accepted' %}completed
+                                                {% elif application.status == 'Pending' %}pending
+                                                {% elif application.status == 'Rejected' %}failed
+                                                {% else %}recent{% endif %}">
+                                                {{ application.status }}
+                                            </span>
+                                        </td>
+                                        <td>{{ application.applied_at|date:"M d, Y" }}</td>
+                                        <td>
+                                            <a href="{% url 'application_detail' application.id %}" class="btn btn-sm">View</a>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="5">
+                                            <div class="empty-state">
+                                                <i class="ri-file-list-3-line"></i>
+                                                <h3>No Applications Yet</h3>
+                                                <p>Start applying for jobs to see your applications here</p>
+                                                <a href="{% url 'job_list' %}" class="btn">
+                                                    <i class="ri-search-line"></i>
+                                                    Browse Jobs
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                
+                    {% if page_obj.has_other_pages %}
+                        <div class="pagination">
+                            {% if page_obj.has_previous %}
+                                <a href="?page={{ page_obj.previous_page_number }}{% if filter_form.is_bound %}&{{ request.GET.urlencode }}{% endif %}">
+                                    <i class="ri-arrow-left-line"></i>
+                                </a>
+                            {% endif %}
+                            
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                    <strong>{{ num }}</strong>
+                                {% else %}
+                                    <a href="?page={{ num }}{% if filter_form.is_bound %}&{{ request.GET.urlencode }}{% endif %}">{{ num }}</a>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}{% if filter_form.is_bound %}&{{ request.GET.urlencode }}{% endif %}">
+                                    <i class="ri-arrow-right-line"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Payments Tab -->
+        <div id="payments" class="tab-content full-width-card">
+            <div class="dashboard-card">
+                <h2>
+                    <i class="ri-history-line"></i>
+                    Payment History
+                </h2>
+                
+                {% if payments|length == 0 %}
+                    <div class="empty-state">
+                        <i class="ri-bank-card-line"></i>
+                        <h3>No Payments Found</h3>
+                        <p>Your payment history will appear here once you make payments</p>
+                    </div>
+                {% else %}
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Method</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in payments %}
+                                <tr>
+                                    <td>{{ payment.transaction_id }}</td>
+                                    <td>KES {{ payment.amount|floatformat:2 }}</td>
+                                    <td>{{ payment.transaction_date|date:"M d, Y" }}</td>
+                                    <td>
+                                        <span class="stats-value {% if payment.status == 'completed' %}completed{% elif payment.status == 'pending' %}pending{% elif payment.status == 'failed' %}failed{% else %}recent{% endif %}">
+                                            {{ payment.status|title }}
+                                        </span>
+                                    </td>
+                                    <td>{{ payment.payment_method }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    {% if payments.has_other_pages %}
+                    <div class="pagination">
+                        {% if payments.has_previous %}
+                        <a href="?payments_page={{ payments.previous_page_number }}{% if request.GET.tab %}&tab=payments{% endif %}">
+                            <i class="ri-arrow-left-line"></i>
+                        </a>
+                        {% endif %}
+                        
+                        {% for i in payments.paginator.page_range %}
+                            {% if payments.number == i %}
+                            <strong>{{ i }}</strong>
+                            {% else %}
+                            <a href="?payments_page={{ i }}{% if request.GET.tab %}&tab=payments{% endif %}">{{ i }}</a>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if payments.has_next %}
+                        <a href="?payments_page={{ payments.next_page_number }}{% if request.GET.tab %}&tab=payments{% endif %}">
+                            <i class="ri-arrow-right-line"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recent Jobs Tab -->
+        <div id="jobs" class="tab-content full-width-card">
+            <div class="dashboard-card">
+                <h2>
+                    <i class="ri-briefcase-line"></i>
+                    Recent Jobs
+                </h2>
+                
+                {% if recent_jobs|length == 0 %}
+                    <div class="empty-state">
+                        <i class="ri-briefcase-line"></i>
+                        <h3>No Recent Jobs</h3>
+                        <p>Your recently paid jobs will appear here</p>
+                        <a href="{% url 'job_list' %}" class="btn">
+                            <i class="ri-search-line"></i>
+                            Browse Jobs
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for job in recent_jobs %}
+                                <tr>
+                                    <td>{{ job.title }}</td>
+                                    <td>KES {{ job.payment_set.first.amount|floatformat:2 }}</td>
+                                    <td>{{ job.payment_set.first.transaction_date|date:"M d, Y" }}</td>
+                                    <td>
+                                        {% with status=job.payment_set.first.status %}
+                                        <span class="stats-value {% if status == 'completed' %}completed{% elif status == 'pending' %}pending{% elif status == 'failed' %}failed{% else %}recent{% endif %}">
+                                            {{ status|title }}
+                                        </span>
+                                        {% endwith %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Progress bar animation
+            const progressBar = document.getElementById('progress');
+            setTimeout(() => {
+                progressBar.style.width = '{{ profile_completion_percentage }}%';
+            }, 500);
+
+            // Stagger animation for dashboard cards
+            const cards = document.querySelectorAll('.dashboard-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${0.2 * index}s`;
+            });
+            
+            // Tab functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            // Check URL parameters for active tab
+            const urlParams = new URLSearchParams(window.location.search);
+            const activeTab = urlParams.get('tab');
+            
+            if (activeTab) {
+                // Set active tab based on URL parameter
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.tab === activeTab) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === activeTab) {
+                        content.classList.add('active');
+                    }
+                });
+            }
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Deactivate all buttons and hide all contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Activate clicked button and corresponding content
+                    button.classList.add('active');
+                    const tabId = button.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    // Update URL with tab parameter without reloading the page
+                    const url = new URL(window.location);
+                    url.searchParams.set('tab', tabId);
+                    window.history.pushState({}, '', url);
+                });
+            });
+        });
+    </script>
+{% endblock %}

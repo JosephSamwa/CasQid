@@ -1,0 +1,830 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <title>CasQid Travel Agency | Air Ticketing, Visa Assistance & Job Placements</title>
+        <meta name="description" content="CasQid Travel Agency offers air ticketing, hotel booking, visa assistance, jobs abroad, and customized tour packages. Explore the world with ease.">
+        <meta name="keywords" content="travel agency, air ticketing, visa assistance, jobs abroad, holiday packages, hotel booking, international travel, work abroad, work visas, travel deals, flight booking, job placement, global opportunities, tourism, work permits, travel planning, study abroad, travel packages, affordable flights, CasQid Travel, best travel agency, travel consulting, adventure travel, business travel, vacation planning, overseas employment, flight reservations, cheap flights, immigration services, job seekers abroad, worldwide travel, professional travel services">
+
+        <meta name="author" content="CasQid Travel Agency">
+        
+        <!-- Open Graph Meta Tags (For Social Media) -->
+        <meta property="og:title" content="CasQid Travel Agency - Explore the World">
+        <meta property="og:description" content="Your one-stop solution for air ticketing, visa processing, and international job placements.">
+        <meta property="og:image" content="https://casqidtravels.com/static/images/logo.jpg">
+        <meta property="og:url" content="https://casqidtravels.com">
+        <meta property="og:type" content="website">
+    
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="CasQid Travel Agency - Your Gateway to the World">
+        <meta name="twitter:description" content="We provide affordable travel solutions, from flight booking to visa assistance and job placements abroad.">
+        <meta name="twitter:image" content="https://casqidtravels.com/static/images/logo.jpg">
+    
+        <!-- Canonical URL -->
+        <link rel="canonical" href="https://casqidtravels.com">
+    
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" href="https://casqidtravels.com/static/images/logo.jpg">
+            
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #C21CC2; /* Magenta from the logo */
+            --secondary-color: #007A8A; /* Teal from the logo */
+            --text-gray: #808080; /* Gray from "TRAVELS" in the logo */
+            --text-color: #4A4A4A; /* Dark Gray for readability */
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo {
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        #logo {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .Cas {
+            color: var(--primary-color);
+        }
+        
+        .Qid {
+            color: var(--secondary-color);
+        }
+        
+        .navbar-nav .nav-link {
+            position: relative;
+            transition: color 0.3s;
+        }
+        
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+        
+        .navbar-nav .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Message styles */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1040;
+        }
+        
+        .toast {
+            min-width: 250px;
+        }
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        /* Bottom Banner Styles (same as before) */
+        .banner-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .banner {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .banner.expanded {
+            width: 280px;
+            height: 70px;
+            padding: 0 25px;
+        }
+
+        .banner.shrinked {
+            width: 60px;
+            height: 60px;
+            justify-content: center;
+        }
+
+        .banner-icon {
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .banner-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: #6e8efb;
+        }
+
+        .banner-text {
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            margin-left: 15px;
+            white-space: nowrap;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .banner.shrinked .banner-text {
+            opacity: 0;
+            width: 0;
+            margin-left: 0;
+        }
+
+        .banner:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .banner:active {
+            transform: translateY(1px);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .banner.shrinked {
+            animation: pulse 2s infinite;
+        }
+
+        /* Top Banner Styles */
+        .top-banner-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 999;
+            overflow: hidden;
+            height: 0;
+            transition: height 0.7s ease-out;
+        }
+
+        .top-banner {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 0 30px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 70px;
+            min-width: 300px;
+            max-width: 800px;
+            width: fit-content;
+            font-weight: 600;
+            font-size: 18px;
+            opacity: 0;
+            transform: translateY(-100%);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .top-banner.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .top-banner-icon {
+            margin-right: 15px;
+            font-size: 24px;
+        }
+
+        .close-btn {
+            margin-left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        /* Floating action buttons */
+        .floating-buttons {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .floating-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-decoration: none;
+        }
+        
+        .floating-btn:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.2);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .whatsapp-btn {
+            background: #25d366;
+        }
+        
+        .whatsapp-btn:hover {
+            background: #20b958;
+        }
+        
+        .call-btn {
+            background: #2563eb;
+        }
+        
+        .call-btn:hover {
+            background: #1e40af;
+        }
+        
+        .content-wrapper {
+            flex: 1;
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* LinkedIn-style Messages */
+        .message-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1060;
+            max-width: 360px;
+            width: 100%;
+        }
+
+        .message {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-bottom: 10px;
+            padding: 16px;
+            transform: translateX(400px);
+            animation: slideIn 0.5s forwards, slideOut 0.5s forwards 4.5s;
+            border-left: 4px solid;
+        }
+
+        .message.success {
+            border-left-color: var(--bs-success);
+        }
+
+        .message.error {
+            border-left-color: var(--bs-danger);
+        }
+
+        .message.warning {
+            border-left-color: var(--bs-warning);
+        }
+
+        .message.info {
+            border-left-color: var(--bs-info);
+        }
+
+        @keyframes slideIn {
+            to { transform: translateX(0); }
+        }
+
+        @keyframes slideOut {
+            to { transform: translateX(400px); }
+        }
+
+        .message .btn-close {
+            padding: 0.5rem;
+            margin: -0.5rem;
+        }
+
+        /* Feedback CTA Button */
+        .feedback-btn {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transform-origin: center;
+            animation: pulse 2s infinite;
+            z-index: 1000;
+        }
+
+        .feedback-btn:hover {
+            animation: none;
+            transform: scale(1.05);
+            color: white;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            }
+        }
+
+        /* Star Rating in Modal */
+        .rating {
+            display: inline-block;
+            position: relative;
+            height: 50px;
+            line-height: 50px;
+            font-size: 30px;
+        }
+
+        .rating label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .rating label:last-child {
+            position: static;
+        }
+
+        .rating label:nth-child(1) { z-index: 5; }
+        .rating label:nth-child(2) { z-index: 4; }
+        .rating label:nth-child(3) { z-index: 3; }
+        .rating label:nth-child(4) { z-index: 2; }
+        .rating label:nth-child(5) { z-index: 1; }
+
+        .rating label input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
+
+        .rating label .icon {
+            float: left;
+            color: transparent;
+        }
+
+        .rating label:last-child .icon {
+            color: #000;
+        }
+
+        .rating:not(:hover) label input:checked ~ .icon,
+        .rating:hover label:hover input ~ .icon {
+            color: var(--primary-color);
+        }
+
+        /* Mobile navigation adjustments */
+        @media (max-width: 991px) {
+            .navbar .container {
+                display: grid;
+                grid-template-columns: auto 1fr auto;
+                align-items: center;
+            }
+            
+            .navbar-brand {
+                grid-column: 2;
+                justify-self: center;
+                margin-right: 0;
+                transition: transform 0.3s ease, grid-column 0.3s ease;
+            }
+            
+            .navbar-toggler {
+                grid-column: 1;
+                z-index: 20;
+            }
+            
+            /* Logo image always at right */
+            .logo-image {
+                grid-column: 3;
+                justify-self: end;
+            }
+            
+            /* Brand text always centered */
+            .brand-text {
+                grid-column: 2;
+                justify-self: center;
+            }
+            
+            .navbar-collapse {
+                z-index: 10;
+            }
+            
+            /* Ensure dropdown auth is properly aligned on mobile */
+            .dropdown-menu {
+                position: absolute;
+                right: 0;
+                left: auto;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+        <div class="container">
+            <!-- Mobile menu button moved to the left -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Logo split into image (right) and text (center) -->
+            <div class="d-flex align-items-center navbar-brand">
+                <div class="brand-text d-flex align-items-center">
+                    <span class="Cas">Cas</span><span class="Qid">Qid</span>
+                </div>
+            </div>
+            
+            <a href="{% url 'home' %}" class="logo-image d-flex align-items-center text-decoration-none">
+                <img src="{% static 'images/logo.jpg' %}" alt="CasQid Logo" id="logo" class="me-2">
+            </a>
+            
+            <!-- Navigation items -->
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a href="{% url 'job_list' %}" class="nav-link px-3">Jobs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'contact' %}" class="nav-link px-3">Contacts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'about' %}" class="nav-link px-3">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'services' %}" class="nav-link px-3">Services</a>
+                    </li>
+                </ul>
+                
+                <!-- Auth Buttons -->
+                {% if user.is_authenticated %}
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="me-2">{{ user.get_full_name|default:user.username }}</span>
+                            {% if user.profile.profile_picture %}
+                                <img src="{{ user.profile.profile_picture.url }}" alt="Profile" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+                            {% else %}
+                                <i class="fas fa-user-circle fs-5"></i>
+                            {% endif %}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
+                            {% if user.is_staff %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'admin:index' %}">
+                                    <i class="fas fa-user-shield me-2"></i> Admin Panel
+                                </a>
+                            </li>
+                            {% else %}
+                             <li>
+                                <a class="dropdown-item" href="{% url 'dashboard' %}">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'update_profile' %}">
+                                    <i class="fas fa-user-edit me-2"></i>Complete Profile
+                                </a>
+                            </li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'login' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </a>
+                        <a href="{% url 'register' %}" class="btn btn-primary">
+                            <i class="fas fa-user-plus me-2"></i>Register
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Content container with navbar spacing -->
+    <div class="content-wrapper pt-5 mt-5">
+        <!-- Toast messages -->
+        <div class="message-container">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}" role="alert">
+                        {{ message|safe }}
+                        <button type="button" class="btn-close float-end" onclick="this.parentElement.remove()"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        <!-- Main content -->
+        {% block content %}{% endblock %}
+    </div>
+    
+    <!-- Footer -->
+
+    <footer class="py-4 text-center mt-5">
+        <div class="container">
+            <p class="mb-1 text-muted">
+                &copy; 2025 CasQid Travel Agency. All rights reserved.
+            </p>
+            <p class="mb-0 text-muted">
+                Powered by 
+                <a href="https://elitesamttech.co.ke" target="_blank" class="text-decoration-none fw-bold">
+                    Samtech Elite Solutions
+                </a>
+            </p>
+        </div>
+    </footer>
+    
+    
+    <!-- Floating Buttons -->
+    <div class="floating-buttons">
+        <a href="https://wa.me/+254722201510" target="_blank" class="floating-btn whatsapp-btn" title="Chat on WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="tel:+254722201510" class="floating-btn call-btn" title="Call Us">
+            <i class="fas fa-phone"></i>
+        </a>
+    </div>
+     <!-- Bottom Banner (same as before) -->
+    <div class="banner-container">
+        <div class="banner expanded" id="banner">
+            <div class="banner-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M17 12h-5v5h5v-5zM16 1v2h-4V1H8v2H6c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-2V1h-2zm3 18H6V8h12v11z"/>
+                </svg>
+            </div>
+            <div class="banner-text">Book an Appointment</div>
+        </div>
+    </div>
+
+    <!-- New Top Banner -->
+      <div class="top-banner-container" id="topBannerContainer">
+            <div class="top-banner" id="topBanner">
+                <span class="top-banner-icon">�</span>
+                <span>Book your appointment today! Our travel specialists are ready to assist you</span>
+                <button class="close-btn" id="closeBtn">×</button>
+            </div>
+        </div>
+    <!-- Feedback Button -->
+    <button type="button" class="feedback-btn" data-bs-toggle="modal" data-bs-target="#feedbackModal">
+        <i class="fas fa-comment-dots me-2"></i>Share Your Feedback
+    </button>
+
+    <!-- Feedback Modal -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="feedbackModalLabel">Share Your Experience</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'feedback:submit_feedback' %}" id="feedbackForm">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Your Name</label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Your Email</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Your Role</label>
+                            <input type="text" name="role" class="form-control" placeholder="e.g. Student, Professional, Business Owner">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Rating</label>
+                            <div class="rating">
+                                {% for i in "54321"|make_list %}
+                                <label>
+                                    <input type="radio" name="rating" value="{{ i }}" />
+                                    <span class="icon">★</span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Your Feedback</label>
+                            <textarea name="content" class="form-control" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" name="consent_to_testimonial" class="form-check-input" id="consentCheck">
+                            <label class="form-check-label" for="consentCheck">
+                                I allow my feedback to be shown as a testimonial
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Submit Feedback</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Initialize toasts
+        document.addEventListener('DOMContentLoaded', function() {
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+            var toastList = toastElList.map(function(toastEl) {
+                return new bootstrap.Toast(toastEl);
+            });
+            
+            // Mobile menu toggle - simplified since we don't need to move logo anymore
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+            
+            // Handle clicks outside to close menu
+            document.addEventListener('click', function(event) {
+                if (navbarCollapse.classList.contains('show') && 
+                    !navbarCollapse.contains(event.target) && 
+                    !navbarToggler.contains(event.target)) {
+                    
+                    // Use Bootstrap's collapse API for proper event triggering
+                    const bsCollapse = new bootstrap.Collapse(navbarCollapse);
+                    bsCollapse.hide();
+                }
+            });
+        });
+    </script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyA_gXervuS77nFQ1qP2OygmtWZaHHcoP3M",
+          authDomain: "samtech-elite.firebaseapp.com",
+          projectId: "samtech-elite",
+          storageBucket: "samtech-elite.firebasestorage.app",
+          messagingSenderId: "792061434033",
+          appId: "1:792061434033:web:80feeb4699f02086322a90",
+          measurementId: "G-W9FP9SWQ2M"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+      </script>
+         <script>
+        // Bottom Banner Logic (same as before)
+        const banner = document.getElementById('banner');
+        let isExpanded = true;
+        let timeoutId;
+
+        function toggleBanner() {
+            isExpanded = !isExpanded;
+            if (isExpanded) {
+                banner.classList.remove('shrinked');
+                banner.classList.add('expanded');
+            } else {
+                banner.classList.remove('expanded');
+                banner.classList.add('shrinked');
+            }
+            
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(toggleBanner, 5000);
+        }
+
+        timeoutId = setTimeout(toggleBanner, 5000);
+
+        banner.addEventListener('click', function() {
+            toggleBanner();
+            if (isExpanded) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(toggleBanner, 10000);
+            }
+        });
+
+        // Top Banner Logic
+        const topBannerContainer = document.getElementById('topBannerContainer');
+        const topBanner = document.getElementById('topBanner');
+        const closeBtn = document.getElementById('closeBtn');
+
+        // Check if banner was already shown in this session
+        if (!sessionStorage.getItem('topBannerShown')) {
+            // Show the banner after a slight delay
+            setTimeout(() => {
+                topBannerContainer.style.height = '70px';
+                setTimeout(() => {
+                    topBanner.classList.add('show');
+                    
+                    // Auto-hide after 8 seconds
+                    setTimeout(() => {
+                        hideTopBanner();
+                    }, 8000);
+                }, 100);
+            }, 1500);
+        }
+
+        function hideTopBanner() {
+            topBanner.classList.remove('show');
+            setTimeout(() => {
+                topBannerContainer.style.height = '0';
+                sessionStorage.setItem('topBannerShown', 'true');
+            }, 500);
+        }
+
+        closeBtn.addEventListener('click', hideTopBanner);
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
