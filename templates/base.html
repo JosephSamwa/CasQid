@@ -119,160 +119,15 @@
             background-color: #f5f5f5;
         }
 
-        /* Bottom Banner Styles (same as before) */
-        .banner-container {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 1000;
-        }
-
-        .banner {
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
-            border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .banner.expanded {
-            width: 280px;
-            height: 70px;
-            padding: 0 25px;
-        }
-
-        .banner.shrinked {
-            width: 60px;
-            height: 60px;
-            justify-content: center;
-        }
-
-        .banner-icon {
-            width: 40px;
-            height: 40px;
-            background-color: white;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-shrink: 0;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .banner-icon svg {
-            width: 20px;
-            height: 20px;
-            fill: #6e8efb;
-        }
-
-        .banner-text {
-            color: white;
-            font-weight: 600;
-            font-size: 16px;
-            margin-left: 15px;
-            white-space: nowrap;
-            opacity: 1;
-            transition: opacity 0.3s ease;
-        }
-
-        .banner.shrinked .banner-text {
-            opacity: 0;
-            width: 0;
-            margin-left: 0;
-        }
-
-        .banner:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-        }
-
-        .banner:active {
-            transform: translateY(1px);
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .banner.shrinked {
-            animation: pulse 2s infinite;
-        }
-
-        /* Top Banner Styles */
-        .top-banner-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            z-index: 999;
-            overflow: hidden;
-            height: 0;
-            transition: height 0.7s ease-out;
-        }
-
-        .top-banner {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            padding: 0 30px;
-            border-radius: 0 0 20px 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 70px;
-            min-width: 300px;
-            max-width: 800px;
-            width: fit-content;
-            font-weight: 600;
-            font-size: 18px;
-            opacity: 0;
-            transform: translateY(-100%);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-
-        .top-banner.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .top-banner-icon {
-            margin-right: 15px;
-            font-size: 24px;
-        }
-
-        .close-btn {
-            margin-left: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background 0.2s ease;
-        }
-
-        .close-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
         /* Floating action buttons */
         .floating-buttons {
             position: fixed;
             bottom: 20px;
             right: 20px;
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            flex-direction: row;
+            align-items: center;
+            gap: 15px;
             z-index: 1000;
         }
         
@@ -503,6 +358,30 @@
                 left: auto;
             }
         }
+
+        /* Bottom Banner Container - Repositioned */
+        .banner-container {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+        }
+
+        .banner {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            height: 50px; /* Match height with buttons */
+        }
+
+        .banner.expanded {
+            width: 240px;
+            padding: 0 20px;
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -628,8 +507,6 @@
             </p>
         </div>
     </footer>
-    
-    
     <!-- Floating Buttons -->
     <div class="floating-buttons">
         <a href="https://wa.me/+254722201510" target="_blank" class="floating-btn whatsapp-btn" title="Chat on WhatsApp">
@@ -638,21 +515,49 @@
         <a href="tel:+254722201510" class="floating-btn call-btn" title="Call Us">
             <i class="fas fa-phone"></i>
         </a>
-   
-        <!-- Bottom Banner (same as before) -->
+    
+              <!-- Bottom Banner (integrated in the same line) -->
         <div class="banner-container">
-            <a href="{% url 'book_appointment' %}" style="text-decoration: none;">
-            <div class="banner expanded" id="banner">
-                <div class="banner-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M17 12h-5v5h5v-5zM16 1v2h-4V1H8v2H6c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-2V1h-2zm3 18H6V8h12v11z"/>
-                    </svg>
-                </div>
-                <div class="banner-text">Book an Appointment</div>
-            </div>
-            </a>
+            {% if user.is_authenticated %}
+                {% with has_pending_appointment=user.appointment_set.exclude|default:False %}
+                    {% if has_pending_appointment %}
+                        <a href="{% url 'appointment_tracking' %}" style="text-decoration: none;">
+                            <div class="banner expanded" id="banner">
+                                <div class="banner-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                                    </svg>
+                                </div>
+                                <div class="banner-text">Track Your Appointment</div>
+                            </div>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'book_appointment' %}" style="text-decoration: none;">
+                            <div class="banner expanded" id="banner">
+                                <div class="banner-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M17 12h-5v5h5v-5zM16 1v2h-4V1H8v2H6c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-2V1h-2zm3 18H6V8h12v11z"/>
+                                    </svg>
+                                </div>
+                                <div class="banner-text">Book an Appointment</div>
+                            </div>
+                        </a>
+                    {% endif %}
+                {% endwith %}
+            {% else %}
+                <a href="{% url 'book_appointment' %}" style="text-decoration: none;">
+                    <div class="banner expanded" id="banner">
+                        <div class="banner-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M17 12h-5v5h5v-5zM16 1v2h-4V1H8v2H6c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-2V1h-2zm3 18H6V8h12v11z"/>
+                            </svg>
+                        </div>
+                        <div class="banner-text">Book an Appointment</div>
+                    </div>
+                </a>
+            {% endif %}
         </div>
-     </div>
+    </div>
 
      <!-- New Top Banner -->
     <div class="top-banner-container" id="topBannerContainer">

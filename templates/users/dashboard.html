@@ -2,6 +2,7 @@
 {% load static %}
 {% block title %}{{ user.username }} -Dashboard {% endblock %}
 
+
 {% block extra_css %}
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -467,6 +468,7 @@
             <button class="tab-button" data-tab="applications">Applications</button>
             <button class="tab-button" data-tab="payments">Payments</button>
             <button class="tab-button" data-tab="jobs">Recent Jobs</button>
+            <button class="tab-button" data-tab="appointments">Appointments</button>
         </div>
 
         <!-- Summary Dashboard Grid (shown by default on mobile) -->
@@ -486,6 +488,21 @@
                             </li>
                         {% endfor %}
                     </ul>
+                </div>
+
+                <div class="dashboard-card">
+                    <h2>
+                        <i class="ri-calendar-check-line"></i>
+                        Appointments
+                    </h2>
+                    <div class="d-flex flex-column gap-3 mt-3">
+                        <a href="{% url 'book_appointment' %}" class="btn w-100">
+                            <i class="ri-calendar-event-line me-2"></i>Book New Appointment
+                        </a>
+                        <a href="{% url 'appointment_tracking' %}" class="btn w-100" style="background-color: var(--secondary-color);">
+                            <i class="ri-time-line me-2"></i>Track Appointment Status
+                        </a>
+                    </div>
                 </div>
 
                 <div class="dashboard-card">
@@ -788,6 +805,46 @@
                         </table>
                     </div>
                 {% endif %}
+            </div>
+        </div>
+
+        <!-- Appointments Tab -->
+        <div id="appointments" class="tab-content full-width-card">
+            <div class="dashboard-card">
+                <h2>
+                    <i class="ri-calendar-check-line"></i>
+                    Your Appointments
+                </h2>
+                
+                <div class="d-flex flex-column gap-3 my-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <i class="ri-calendar-event-line" style="font-size: 3rem; color: var(--primary-color);"></i>
+                            <h3 class="mt-3 mb-2">Need to Schedule a Consultation?</h3>
+                            <p class="text-muted mb-3">Book an appointment with our travel specialists to discuss your travel plans</p>
+                            <a href="{% url 'book_appointment' %}" class="btn w-100">
+                                <i class="ri-calendar-event-line me-2"></i>Book New Appointment
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <i class="ri-time-line" style="font-size: 3rem; color: var(--secondary-color);"></i>
+                            <h3 class="mt-3 mb-2">Already Have an Appointment?</h3>
+                            <p class="text-muted mb-3">Check the status of your existing appointments</p>
+                            <a href="{% url 'appointment_tracking' %}" class="btn w-100" style="background-color: var(--secondary-color);">
+                                <i class="ri-time-line me-2"></i>Track Appointment Status
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="empty-state">
+                    <i class="ri-information-line"></i>
+                    <h3>Recent Appointments</h3>
+                    <p>Your recent appointments will be displayed here</p>
+                </div>
             </div>
         </div>
     </div>
