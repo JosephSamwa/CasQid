@@ -235,14 +235,15 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Email configuration for SMTP backend
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'casqidtravelagency@gmail.com'  # Replace with your email
-EMAIL_HOST_PASSWORD = 'sijf pekq ravo efhn'  # Replace with your email password
+EMAIL_HOST = 'mail.casqidtravels.com'  # Your domain's SMTP server
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True  # Use SSL instead of TLS for port 465
+EMAIL_USE_TLS = False  # Set to False when using SSL
+EMAIL_HOST_USER = 'info@casqidtravels.com'  # Your email
+EMAIL_HOST_PASSWORD = 'info@casqid'  # Replace with your actual email password
 
-ADMIN_EMAIL = 'casqidtravelagency@gmail.com'  
-DEFAULT_FROM_EMAIL = 'casqidtravelagency@gmail.com'   
+ADMIN_EMAIL = 'info@casqidtravels.com'  
+DEFAULT_FROM_EMAIL = 'info@casqidtravels.com'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
