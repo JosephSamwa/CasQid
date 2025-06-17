@@ -1,70 +1,529 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">Your Appointment Status</h2>
-            </div>
-            <div class="card-body">
-                {% if appointments %}
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Service</th>
-                                    <th>Date</th>
-                                    <th>Time</th>
-                                    <th>Status</th>
-                                    <th>Booking Code</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for appointment in appointments %}
-                                <tr>
-                                    <td>{{ appointment.service.name }}</td>
-                                    <td>
-                                        {% if appointment.approved_date %}
-                                            {{ appointment.approved_date|date:"M j, Y" }}
-                                        {% else %}
-                                            {{ appointment.requested_date|date:"M j, Y" }}
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if appointment.approved_time %}
-                                            {{ appointment.approved_time|time:"g:i A" }}
-                                        {% else %}
-                                            {{ appointment.requested_time|time:"g:i A" }}
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <span class="badge 
-                                            {% if appointment.status == 'approved' %}bg-success
-                                            {% elif appointment.status == 'rejected' %}bg-danger
-                                            {% elif appointment.status == 'pending' %}bg-warning text-dark
-                                            {% elif appointment.status == 'completed' %}bg-info
-                                            {% else %}bg-secondary{% endif %}">
-                                            {{ appointment.get_status_display }}
-                                        </span>
-                                        {% if appointment.status == 'rejected' and appointment.rejection_reason %}
-                                            <div class="mt-1 small text-muted">{{ appointment.rejection_reason }}</div>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ appointment.booking_code|default:"-" }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+<style>
+    .results-container {
+        min-height: 80vh;
+        background: linear-gradient(135deg, rgba(194, 28, 194, 0.05) 0%, rgba(0, 122, 138, 0.05) 100%);
+        padding: 40px 0;
+    }
+
+    .results-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .results-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, #C21CC2 0%, #007A8A 100%);
+        padding: 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-header-custom::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(255, 255, 255, 0.05) 10px,
+            rgba(255, 255, 255, 0.05) 20px
+        );
+        animation: slide 20s infinite linear;
+    }
+
+    @keyframes slide {
+        0% { transform: translateX(-50%) translateY(-50%) rotate(0deg); }
+        100% { transform: translateX(-50%) translateY(-50%) rotate(360deg); }
+    }
+
+    .card-header-custom h2 {
+        position: relative;
+        z-index: 2;
+        font-weight: 700;
+        font-size: 2rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        margin: 0;
+    }
+
+    .card-header-custom .subtitle {
+        position: relative;
+        z-index: 2;
+        opacity: 0.9;
+        font-size: 1.1rem;
+        margin-top: 8px;
+    }
+
+    .results-content {
+        padding: 40px 30px;
+    }
+
+    .appointments-table {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        border: none;
+    }
+
+    .appointments-table thead {
+        background: linear-gradient(135deg, rgba(194, 28, 194, 0.1), rgba(0, 122, 138, 0.1));
+    }
+
+    .appointments-table thead th {
+        border: none;
+        padding: 20px 15px;
+        font-weight: 600;
+        color: #4A4A4A;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        position: relative;
+    }
+
+    .appointments-table tbody tr {
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .appointments-table tbody tr:hover {
+        background: linear-gradient(135deg, rgba(194, 28, 194, 0.02), rgba(0, 122, 138, 0.02));
+        transform: scale(1.01);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .appointments-table tbody td {
+        border: none;
+        padding: 20px 15px;
+        vertical-align: middle;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .appointments-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .status-badge {
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 100px;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .status-approved {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+    }
+
+    .status-pending {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+    }
+
+    .status-rejected {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+    }
+
+    .status-completed {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+    }
+
+    .status-secondary {
+        background: linear-gradient(135deg, #6b7280, #4b5563);
+        color: white;
+    }
+
+    .service-name {
+        font-weight: 600;
+        color: #4A4A4A;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .service-icon {
+        width: 35px;
+        height: 35px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #C21CC2, #007A8A);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+
+    .date-time-info {
+        color: #4A4A4A;
+        font-weight: 500;
+    }
+
+    .booking-code {
+        font-family: 'Monaco', 'Menlo', monospace;
+        background: linear-gradient(135deg, rgba(194, 28, 194, 0.1), rgba(0, 122, 138, 0.1));
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #4A4A4A;
+        border: 1px solid rgba(194, 28, 194, 0.2);
+    }
+
+    .rejection-reason {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin-top: 8px;
+        font-size: 0.85rem;
+        color: #dc2626;
+        font-style: italic;
+    }
+
+    .no-appointments {
+        text-align: center;
+        padding: 60px 30px;
+        background: linear-gradient(135deg, rgba(194, 28, 194, 0.05), rgba(0, 122, 138, 0.05));
+        border-radius: 15px;
+        border: 2px dashed rgba(194, 28, 194, 0.2);
+    }
+
+    .no-appointments-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(194, 28, 194, 0.1), rgba(0, 122, 138, 0.1));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: #808080;
+        font-size: 2rem;
+    }
+
+    .btn-try-again {
+        background: linear-gradient(135deg, #C21CC2 0%, #007A8A 100%);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(194, 28, 194, 0.3);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 20px;
+    }
+
+    .btn-try-again:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(194, 28, 194, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .appointment-summary {
+        background: linear-gradient(135deg, rgba(194, 28, 194, 0.05), rgba(0, 122, 138, 0.05));
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(194, 28, 194, 0.1);
+    }
+
+    .summary-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .summary-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .summary-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #C21CC2, #007A8A);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .results-container {
+            padding: 20px 0;
+        }
+        
+        .card-header-custom {
+            padding: 25px 20px;
+        }
+        
+        .card-header-custom h2 {
+            font-size: 1.6rem;
+        }
+        
+        .results-content {
+            padding: 30px 20px;
+        }
+        
+        .appointments-table {
+            font-size: 0.9rem;
+        }
+        
+        .appointments-table thead th,
+        .appointments-table tbody td {
+            padding: 15px 10px;
+        }
+        
+        .service-name {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+    }
+
+    /* Responsive table */
+    @media (max-width: 576px) {
+        .table-responsive {
+            border-radius: 15px;
+        }
+        
+        .appointments-table thead {
+            display: none;
+        }
+        
+        .appointments-table tbody tr {
+            display: block;
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .appointments-table tbody td {
+            display: block;
+            padding: 10px 0;
+            border: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .appointments-table tbody td:last-child {
+            border-bottom: none;
+        }
+        
+        .appointments-table tbody td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: #808080;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+    }
+</style>
+
+<div class="results-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-md-12">
+                <div class="card results-card">
+                    <div class="card-header-custom">
+                        <h2><i class="fas fa-calendar-check me-3"></i>Your Appointment Status</h2>
+                        <div class="subtitle">Track your appointments and stay updated</div>
                     </div>
-                {% else %}
-                    <div class="alert alert-warning">
-                        No appointments found. Please check your email or booking code and try again.
+                    
+                    <div class="results-content">
+                        {% if appointments %}
+                            <div class="appointment-summary">
+                                <div class="summary-item">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-list"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Total Appointments Found</strong><br>
+                                        <span class="text-muted">{{ appointments|length }} appointment{{ appointments|length|pluralize }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="table appointments-table">
+                                    <thead>
+                                        <tr>
+                                            <th><i class="fas fa-concierge-bell me-2"></i>Service</th>
+                                            <th><i class="fas fa-calendar-alt me-2"></i>Date</th>
+                                            <th><i class="fas fa-clock me-2"></i>Time</th>
+                                            <th><i class="fas fa-info-circle me-2"></i>Status</th>
+                                            <th><i class="fas fa-barcode me-2"></i>Booking Code</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for appointment in appointments %}
+                                        <tr>
+                                            <td data-label="Service">
+                                                <div class="service-name">
+                                                    <div class="service-icon">
+                                                        <i class="fas fa-star"></i>
+                                                    </div>
+                                                    <span>{{ appointment.service.name }}</span>
+                                                </div>
+                                            </td>
+                                            <td data-label="Date">
+                                                <div class="date-time-info">
+                                                    {% if appointment.approved_date %}
+                                                        <i class="fas fa-check-circle text-success me-1"></i>
+                                                        {{ appointment.approved_date|date:"M j, Y" }}
+                                                    {% else %}
+                                                        <i class="fas fa-clock text-warning me-1"></i>
+                                                        {{ appointment.requested_date|date:"M j, Y" }}
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td data-label="Time">
+                                                <div class="date-time-info">
+                                                    {% if appointment.approved_time %}
+                                                        <i class="fas fa-check-circle text-success me-1"></i>
+                                                        {{ appointment.approved_time|time:"g:i A" }}
+                                                    {% else %}
+                                                        <i class="fas fa-clock text-warning me-1"></i>
+                                                        {{ appointment.requested_time|time:"g:i A" }}
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td data-label="Status">
+                                                <span class="status-badge 
+                                                    {% if appointment.status == 'approved' %}status-approved
+                                                    {% elif appointment.status == 'rejected' %}status-rejected
+                                                    {% elif appointment.status == 'pending' %}status-pending
+                                                    {% elif appointment.status == 'completed' %}status-completed
+                                                    {% else %}status-secondary{% endif %}">
+                                                    {% if appointment.status == 'approved' %}
+                                                        <i class="fas fa-check"></i>
+                                                    {% elif appointment.status == 'rejected' %}
+                                                        <i class="fas fa-times"></i>
+                                                    {% elif appointment.status == 'pending' %}
+                                                        <i class="fas fa-hourglass-half"></i>
+                                                    {% elif appointment.status == 'completed' %}
+                                                        <i class="fas fa-check-double"></i>
+                                                    {% else %}
+                                                        <i class="fas fa-question"></i>
+                                                    {% endif %}
+                                                    {{ appointment.get_status_display }}
+                                                </span>
+                                                {% if appointment.status == 'rejected' and appointment.rejection_reason %}
+                                                    <div class="rejection-reason">
+                                                        <i class="fas fa-info-circle me-1"></i>
+                                                        {{ appointment.rejection_reason }}
+                                                    </div>
+                                                {% endif %}
+                                            </td>
+                                            <td data-label="Booking Code">
+                                                <div class="booking-code">
+                                                    {{ appointment.booking_code|default:"-" }}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="no-appointments">
+                                <div class="no-appointments-icon">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <h4 class="text-muted mb-3">No Appointments Found</h4>
+                                <p class="text-muted mb-0">
+                                    We couldn't find any appointments matching your search criteria. 
+                                    Please check your email address or booking code and try again.
+                                </p>
+                                <a href="{% url 'appointment_tracking' %}" class="btn-try-again">
+                                    <i class="fas fa-redo-alt"></i>
+                                    Try Again
+                                </a>
+                            </div>
+                        {% endif %}
                     </div>
-                    <a href="{% url 'appointment_tracking' %}" class="btn btn-primary">Try Again</a>
-                {% endif %}
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add smooth animations to table rows
+    const tableRows = document.querySelectorAll('.appointments-table tbody tr');
+    
+    tableRows.forEach((row, index) => {
+        row.style.opacity = '0';
+        row.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            row.style.transition = 'all 0.5s ease';
+            row.style.opacity = '1';
+            row.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+    
+    // Add click-to-copy functionality for booking codes
+    const bookingCodes = document.querySelectorAll('.booking-code');
+    
+    bookingCodes.forEach(code => {
+        if (code.textContent.trim() !== '-') {
+            code.style.cursor = 'pointer';
+            code.title = 'Click to copy booking code';
+            
+            code.addEventListener('click', function() {
+                navigator.clipboard.writeText(this.textContent.trim()).then(() => {
+                    const originalText = this.textContent;
+                    this.textContent = 'Copied!';
+                    this.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2))';
+                    
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                        this.style.background = '';
+                    }, 2000);
+                });
+            });
+        }
+    });
+});
+</script>
 {% endblock %}

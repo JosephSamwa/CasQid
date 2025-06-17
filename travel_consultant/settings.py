@@ -266,11 +266,11 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # When using Django Storages, override default storage only in production
-if not DEBUG:
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-else:
+#if not DEBUG:
+    #DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+#else:
     # In development, use the standard file storage
-    DEFAULT_FILE_STORAGE = 'django.core.mail.file_storage.FileSystemStorage'
+    #DEFAULT_FILE_STORAGE = 'django.core.mail.file_storage.FileSystemStorage'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
@@ -317,7 +317,7 @@ SITE_ID = 1
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Django Storages settings
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # Django Channels settings
 CHANNEL_LAYERS = {

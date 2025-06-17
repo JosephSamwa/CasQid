@@ -1,72 +1,515 @@
 {% extends "admin/base_site.html" %}
 
 {% block content %}
-<div class="card">
-    <div class="card-header bg-success text-white">
-        <h2 class="mb-0">Bulk Approve Appointments</h2>
-    </div>
-    <div class="card-body">
-        <p>You are about to approve the following {{ appointments|length }} appointments:</p>
+<style>
+    :root {
+        --primary-color: #C21CC2;
+        --secondary-color: #007A8A;
+        --text-gray: #808080;
+        --text-color: #4A4A4A;
+        --success-color: #10b981;
+        --success-dark: #059669;
+    }
+
+    .bulk-approve-container {
+        min-height: 80vh;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%);
+        padding: 40px 0;
+    }
+
+    .bulk-approve-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .bulk-approve-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header-bulk-approve {
+        background: linear-gradient(135deg, var(--success-color) 0%, var(--success-dark) 100%);
+        padding: 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-header-bulk-approve::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(255, 255, 255, 0.05) 10px,
+            rgba(255, 255, 255, 0.05) 20px
+        );
+        animation: slide 20s infinite linear;
+    }
+
+    @keyframes slide {
+        0% { transform: translateX(-50%) translateY(-50%) rotate(0deg); }
+        100% { transform: translateX(-50%) translateY(-50%) rotate(360deg); }
+    }
+
+    .card-header-bulk-approve h2 {
+        position: relative;
+        z-index: 2;
+        font-weight: 700;
+        font-size: 2rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        margin: 0;
+        color: white;
+    }
+
+    .card-header-bulk-approve .subtitle {
+        position: relative;
+        z-index: 2;
+        opacity: 0.9;
+        font-size: 1.1rem;
+        margin-top: 8px;
+        color: white;
+    }
+
+    .card-body-bulk-approve {
+        padding: 40px 30px;
+    }
+
+    .summary-section {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .summary-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        background: linear-gradient(135deg, var(--success-color), var(--success-dark));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.8rem;
+        flex-shrink: 0;
+    }
+
+    .summary-content {
+        flex-grow: 1;
+    }
+
+    .summary-title {
+        font-weight: 700;
+        color: var(--text-color);
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+
+    .summary-text {
+        color: var(--text-gray);
+        font-size: 1rem;
+    }
+
+    .appointments-preview {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(16, 185, 129, 0.1);
+        margin-bottom: 30px;
+    }
+
+    .preview-header {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+        padding: 20px 25px;
+        border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+    }
+
+    .preview-title {
+        font-weight: 600;
+        color: var(--text-color);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .bulk-appointments-table {
+        margin-bottom: 0;
+        border: none;
+    }
+
+    .bulk-appointments-table thead th {
+        border: none;
+        padding: 15px 20px;
+        font-weight: 600;
+        color: var(--text-color);
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        background: rgba(16, 185, 129, 0.05);
+    }
+
+    .bulk-appointments-table tbody tr {
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .bulk-appointments-table tbody tr:hover {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.02), rgba(5, 150, 105, 0.02));
+    }
+
+    .bulk-appointments-table tbody td {
+        border: none;
+        padding: 15px 20px;
+        vertical-align: middle;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .client-name-bulk {
+        font-weight: 600;
+        color: var(--text-color);
+    }
+
+    .service-name-bulk {
+        color: var(--text-color);
+        font-weight: 500;
+    }
+
+    .datetime-bulk {
+        color: var(--text-gray);
+        font-size: 0.9rem;
+    }
+
+    .form-section {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        border: 1px solid rgba(16, 185, 129, 0.1);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.05);
+    }
+
+    .form-group-bulk {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .form-label-bulk {
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 10px;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-control-bulk {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 15px 20px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .form-control-bulk:focus {
+        border-color: var(--success-color);
+        box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.15);
+        background: white;
+        outline: none;
+    }
+
+    .form-control-bulk:hover {
+        border-color: var(--success-dark);
+        background: white;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 15px;
+        justify-content: space-between;
+        margin-top: 30px;
+        align-items: center;
+    }
+
+    .btn-cancel-bulk {
+        background: linear-gradient(135deg, #6b7280, #4b5563);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 12px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+    }
+
+    .btn-cancel-bulk:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(107, 114, 128, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-confirm-bulk {
+        background: linear-gradient(135deg, var(--success-color) 0%, var(--success-dark) 100%);
+        border: none;
+        padding: 15px 40px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-confirm-bulk::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-confirm-bulk:hover::before {
+        left: 100%;
+    }
+
+    .btn-confirm-bulk:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(16, 185, 129, 0.4);
+        color: white;
+    }
+
+    .btn-confirm-bulk:active {
+        transform: translateY(0);
+    }
+
+    .invalid-feedback {
+        display: block;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin-top: 8px;
+        font-size: 0.85rem;
+        color: #dc2626;
+    }
+
+    @media (max-width: 768px) {
+        .bulk-approve-container {
+            padding: 20px 0;
+        }
         
-        <div class="table-responsive mb-4">
-            <table class="table table-sm">
-                <thead>
-                    <tr>
-                        <th>Client</th>
-                        <th>Service</th>
-                        <th>Requested Date/Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for appointment in appointments %}
-                    <tr>
-                        <td>{{ appointment.client_name }}</td>
-                        <td>{{ appointment.service }}</td>
-                        <td>
-                            {{ appointment.requested_date|date:"M j, Y" }}<br>
-                            {{ appointment.requested_time|time:"g:i A" }}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+        .card-header-bulk-approve {
+            padding: 25px 20px;
+        }
+        
+        .card-header-bulk-approve h2 {
+            font-size: 1.6rem;
+        }
+        
+        .card-body-bulk-approve {
+            padding: 30px 20px;
+        }
 
-        <form method="post" action="">
-            {% csrf_token %}
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="{{ form.approved_date.id_for_label }}" class="form-label">Approved Date</label>
-                    {{ form.approved_date }}
-                    {% if form.approved_date.errors %}
-                        <div class="invalid-feedback d-block">
-                            {{ form.approved_date.errors|join:", " }}
-                        </div>
-                    {% endif %}
-                </div>
-                <div class="col-md-6">
-                    <label for="{{ form.approved_time.id_for_label }}" class="form-label">Approved Time</label>
-                    {{ form.approved_time }}
-                    {% if form.approved_time.errors %}
-                        <div class="invalid-feedback d-block">
-                            {{ form.approved_time.errors|join:", " }}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
+        .summary-section {
+            flex-direction: column;
+            text-align: center;
+        }
 
-            <div class="d-flex justify-content-between">
-                <a href="{% url 'admin_appointment_list' %}" class="btn btn-secondary">Cancel</a>
-                <button type="submit" name="apply" class="btn btn-success">Approve All</button>
+        .button-group {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-cancel-bulk,
+        .btn-confirm-bulk {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .bulk-appointments-table thead {
+            display: none;
+        }
+
+        .bulk-appointments-table tbody tr {
+            display: block;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.1);
+        }
+
+        .bulk-appointments-table tbody td {
+            display: block;
+            padding: 8px 0;
+            border: none;
+        }
+
+        .bulk-appointments-table tbody td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            display: block;
+            margin-bottom: 3px;
+        }
+    }
+</style>
+
+<div class="bulk-approve-container">
+    <div class="container">
+        <div class="bulk-approve-card">
+            <div class="card-header-bulk-approve">
+                <h2><i class="fas fa-check-double me-3"></i>Bulk Approve Appointments</h2>
+                <div class="subtitle">Approve multiple appointments with the same schedule</div>
             </div>
             
-            {% for appointment in appointments %}
-            <input type="hidden" name="_selected_action" value="{{ appointment.pk }}">
-            {% endfor %}
-        </form>
+            <div class="card-body-bulk-approve">
+                <div class="summary-section">
+                    <div class="summary-icon">
+                        <i class="fas fa-list-check"></i>
+                    </div>
+                    <div class="summary-content">
+                        <div class="summary-title">{{ appointments|length }} Appointment{{ appointments|length|pluralize }} Selected</div>
+                        <div class="summary-text">You are about to approve all the appointments listed below with the same date and time.</div>
+                    </div>
+                </div>
+                
+                <div class="appointments-preview">
+                    <div class="preview-header">
+                        <h5 class="preview-title">
+                            <i class="fas fa-eye me-2"></i>
+                            Appointments to Approve
+                        </h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table bulk-appointments-table">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-user me-2"></i>Client</th>
+                                    <th><i class="fas fa-concierge-bell me-2"></i>Service</th>
+                                    <th><i class="fas fa-calendar-alt me-2"></i>Requested Date/Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for appointment in appointments %}
+                                <tr>
+                                    <td data-label="Client">
+                                        <div class="client-name-bulk">{{ appointment.client_name }}</div>
+                                    </td>
+                                    <td data-label="Service">
+                                        <div class="service-name-bulk">{{ appointment.service }}</div>
+                                    </td>
+                                    <td data-label="Requested">
+                                        <div class="datetime-bulk">
+                                            {{ appointment.requested_date|date:"M j, Y" }}<br>
+                                            {{ appointment.requested_time|time:"g:i A" }}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <form method="post" action="" id="bulkApproveForm">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group-bulk">
+                                    <label for="{{ form.approved_date.id_for_label }}" class="form-label-bulk">
+                                        <i class="fas fa-calendar-check text-success"></i>
+                                        Approved Date
+                                    </label>
+                                    {{ form.approved_date|add_class:"form-control form-control-bulk" }}
+                                    {% if form.approved_date.errors %}
+                                        <div class="invalid-feedback">
+                                            <i class="fas fa-exclamation-triangle me-1"></i>
+                                            {{ form.approved_date.errors|join:", " }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group-bulk">
+                                    <label for="{{ form.approved_time.id_for_label }}" class="form-label-bulk">
+                                        <i class="fas fa-clock text-success"></i>
+                                        Approved Time
+                                    </label>
+                                    {{ form.approved_time|add_class:"form-control form-control-bulk" }}
+                                    {% if form.approved_time.errors %}
+                                        <div class="invalid-feedback">
+                                            <i class="fas fa-exclamation-triangle me-1"></i>
+                                            {{ form.approved_time.errors|join:", " }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="button-group">
+                            <a href="{% url 'admin_appointment_list' %}" class="btn-cancel-bulk">
+                                <i class="fas fa-arrow-left"></i>
+                                Cancel
+                            </a>
+                            <button type="submit" name="apply" class="btn-confirm-bulk">
+                                <i class="fas fa-check-double"></i>
+                                Approve All {{ appointments|length }} Appointment{{ appointments|length|pluralize }}
+                            </button>
+                        </div>
+                        
+                        {% for appointment in appointments %}
+                        <input type="hidden" name="_selected_action" value="{{ appointment.pk }}">
+                        {% endfor %}
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
+
 
 {% block extrajs %}
 <script>
@@ -75,6 +518,61 @@ document.addEventListener('DOMContentLoaded', function() {
     const dateField = document.getElementById('{{ form.approved_date.id_for_label }}');
     const today = new Date().toISOString().split('T')[0];
     dateField.min = today;
+    
+    // Add loading state to form submission
+    const form = document.getElementById('bulkApproveForm');
+    const submitBtn = form.querySelector('.btn-confirm-bulk');
+    
+    form.addEventListener('submit', function(e) {
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing All Appointments...';
+        submitBtn.disabled = true;
+    });
+    
+    // Enhanced form validation
+    const dateInput = document.getElementById('{{ form.approved_date.id_for_label }}');
+    const timeInput = document.getElementById('{{ form.approved_time.id_for_label }}');
+    
+    function validateForm() {
+        let isValid = true;
+        
+        if (!dateInput.value) {
+            dateInput.style.borderColor = '#ef4444';
+            isValid = false;
+        } else {
+            dateInput.style.borderColor = 'var(--success-color)';
+        }
+        
+        if (!timeInput.value) {
+            timeInput.style.borderColor = '#ef4444';
+            isValid = false;
+        } else {
+            timeInput.style.borderColor = 'var(--success-color)';
+        }
+        
+        submitBtn.disabled = !isValid;
+        return isValid;
+    }
+    
+    dateInput.addEventListener('change', validateForm);
+    timeInput.addEventListener('change', validateForm);
+    
+    // Smooth animations for table rows
+    const tableRows = document.querySelectorAll('.bulk-appointments-table tbody tr');
+    tableRows.forEach((row, index) => {
+        row.style.opacity = '0';
+        row.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            row.style.transition = 'all 0.5s ease';
+            row.style.opacity = '1';
+            row.style.transform = 'translateY(0)';
+        }, index * 50);
+    });
+    
+    // Update button text based on selection count
+    const appointmentCount = {{ appointments|length }};
+    const buttonText = appointmentCount === 1 ? 'Approve 1 Appointment' : `Approve All ${appointmentCount} Appointments`;
+    submitBtn.querySelector('i').nextSibling.textContent = ` ${buttonText}`;
 });
 </script>
 {% endblock %}

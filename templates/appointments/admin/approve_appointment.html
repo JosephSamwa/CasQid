@@ -1,52 +1,442 @@
 {% extends "admin/base_site.html" %}
 
 {% block content %}
-<div class="card">
-    <div class="card-header bg-success text-white">
-        <h2 class="mb-0">Approve Appointment</h2>
-    </div>
-    <div class="card-body">
-        <div class="mb-4">
-            <h4>Appointment Details</h4>
-            <ul>
-                <li><strong>Client:</strong> {{ appointment.client_name }}</li>
-                <li><strong>Service:</strong> {{ appointment.service }}</li>
-                <li><strong>Requested:</strong> {{ appointment.requested_date|date:"M j, Y" }} at {{ appointment.requested_time|time:"g:i A" }}</li>
-                <li><strong>Contact:</strong> {{ appointment.client_phone }} / {{ appointment.client_email }}</li>
-            </ul>
+<style>
+    :root {
+        --primary-color: #C21CC2;
+        --secondary-color: #007A8A;
+        --text-gray: #808080;
+        --text-color: #4A4A4A;
+        --success-color: #10b981;
+        --success-dark: #059669;
+    }
+
+    .approve-container {
+        min-height: 80vh;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%);
+        padding: 40px 0;
+    }
+
+    .approve-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .approve-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header-approve {
+        background: linear-gradient(135deg, var(--success-color) 0%, var(--success-dark) 100%);
+        padding: 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-header-approve::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(255, 255, 255, 0.05) 10px,
+            rgba(255, 255, 255, 0.05) 20px
+        );
+        animation: slide 20s infinite linear;
+    }
+
+    @keyframes slide {
+        0% { transform: translateX(-50%) translateY(-50%) rotate(0deg); }
+        100% { transform: translateX(-50%) translateY(-50%) rotate(360deg); }
+    }
+
+    .card-header-approve h2 {
+        position: relative;
+        z-index: 2;
+        font-weight: 700;
+        font-size: 2rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        margin: 0;
+        color: white;
+    }
+
+    .card-header-approve .subtitle {
+        position: relative;
+        z-index: 2;
+        opacity: 0.9;
+        font-size: 1.1rem;
+        margin-top: 8px;
+        color: white;
+    }
+
+    .card-body-approve {
+        padding: 40px 30px;
+    }
+
+    .appointment-details {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(5, 150, 105, 0.05));
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(16, 185, 129, 0.1);
+    }
+
+    .appointment-details h4 {
+        color: var(--text-color);
+        font-weight: 700;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 15px;
+        background: white;
+        border-radius: 12px;
+        border: 1px solid rgba(16, 185, 129, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .detail-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+    }
+
+    .detail-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--success-color), var(--success-dark));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .detail-content {
+        flex-grow: 1;
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: var(--text-color);
+        font-size: 0.9rem;
+        margin-bottom: 3px;
+    }
+
+    .detail-value {
+        color: var(--text-gray);
+        font-size: 0.95rem;
+    }
+
+    .form-section {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        border: 1px solid rgba(16, 185, 129, 0.1);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.05);
+    }
+
+    .form-group-approve {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .form-label-approve {
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 10px;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-control-approve {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 15px 20px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .form-control-approve:focus {
+        border-color: var(--success-color);
+        box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.15);
+        background: white;
+        outline: none;
+    }
+
+    .form-control-approve:hover {
+        border-color: var(--success-dark);
+        background: white;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 15px;
+        justify-content: space-between;
+        margin-top: 30px;
+        align-items: center;
+    }
+
+    .btn-cancel-approve {
+        background: linear-gradient(135deg, #6b7280, #4b5563);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 12px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+    }
+
+    .btn-cancel-approve:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(107, 114, 128, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-confirm-approve {
+        background: linear-gradient(135deg, var(--success-color) 0%, var(--success-dark) 100%);
+        border: none;
+        padding: 15px 40px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-confirm-approve::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-confirm-approve:hover::before {
+        left: 100%;
+    }
+
+    .btn-confirm-approve:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(16, 185, 129, 0.4);
+        color: white;
+    }
+
+    .btn-confirm-approve:active {
+        transform: translateY(0);
+    }
+
+    .invalid-feedback {
+        display: block;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin-top: 8px;
+        font-size: 0.85rem;
+        color: #dc2626;
+    }
+
+    @media (max-width: 768px) {
+        .approve-container {
+            padding: 20px 0;
+        }
+        
+        .card-header-approve {
+            padding: 25px 20px;
+        }
+        
+        .card-header-approve h2 {
+            font-size: 1.6rem;
+        }
+        
+        .card-body-approve {
+            padding: 30px 20px;
+        }
+
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .button-group {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-cancel-approve,
+        .btn-confirm-approve {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="approve-container">
+    <div class="container">
+        <div class="approve-card">
+            <div class="card-header-approve">
+                <h2><i class="fas fa-check-circle me-3"></i>Approve Appointment</h2>
+                <div class="subtitle">Confirm appointment details and set approved schedule</div>
+            </div>
+            
+            <div class="card-body-approve">
+                <div class="appointment-details">
+                    <h4><i class="fas fa-info-circle me-2"></i>Appointment Details</h4>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="detail-content">
+                                <div class="detail-label">Client Name</div>
+                                <div class="detail-value">{{ appointment.client_name }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-concierge-bell"></i>
+                            </div>
+                            <div class="detail-content">
+                                <div class="detail-label">Service</div>
+                                <div class="detail-value">{{ appointment.service }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="detail-content">
+                                <div class="detail-label">Requested Date & Time</div>
+                                <div class="detail-value">{{ appointment.requested_date|date:"M j, Y" }} at {{ appointment.requested_time|time:"g:i A" }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="detail-content">
+                                <div class="detail-label">Phone</div>
+                                <div class="detail-value">{{ appointment.client_phone }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="detail-content">
+                                <div class="detail-label">Email</div>
+                                <div class="detail-value">{{ appointment.client_email }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <form method="post" id="approveForm">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group-approve">
+                                    <label for="{{ form.approved_date.id_for_label }}" class="form-label-approve">
+                                        <i class="fas fa-calendar-check text-success"></i>
+                                        Approved Date
+                                    </label>
+                                    {{ form.approved_date|add_class:"form-control form-control-approve" }}
+                                    {% if form.approved_date.errors %}
+                                        <div class="invalid-feedback">
+                                            <i class="fas fa-exclamation-triangle me-1"></i>
+                                            {{ form.approved_date.errors|join:", " }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group-approve">
+                                    <label for="{{ form.approved_time.id_for_label }}" class="form-label-approve">
+                                        <i class="fas fa-clock text-success"></i>
+                                        Approved Time
+                                    </label>
+                                    {{ form.approved_time|add_class:"form-control form-control-approve" }}
+                                    {% if form.approved_time.errors %}
+                                        <div class="invalid-feedback">
+                                            <i class="fas fa-exclamation-triangle me-1"></i>
+                                            {{ form.approved_time.errors|join:", " }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="button-group">
+                            <a href="{% url 'admin_appointment_list' %}" class="btn-cancel-approve">
+                                <i class="fas fa-arrow-left"></i>
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn-confirm-approve">
+                                <i class="fas fa-check-double"></i>
+                                Confirm Approval
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <form method="post">
-            {% csrf_token %}
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="{{ form.approved_date.id_for_label }}" class="form-label">Approved Date</label>
-                    {{ form.approved_date }}
-                    {% if form.approved_date.errors %}
-                        <div class="invalid-feedback d-block">
-                            {{ form.approved_date.errors|join:", " }}
-                        </div>
-                    {% endif %}
-                </div>
-                <div class="col-md-6">
-                    <label for="{{ form.approved_time.id_for_label }}" class="form-label">Approved Time</label>
-                    {{ form.approved_time }}
-                    {% if form.approved_time.errors %}
-                        <div class="invalid-feedback d-block">
-                            {{ form.approved_time.errors|join:", " }}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="d-flex justify-content-between">
-                <a href="{% url 'admin_appointment_list' %}" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-success">Confirm Approval</button>
-            </div>
-        </form>
     </div>
 </div>
 {% endblock %}
+
 
 {% block extrajs %}
 <script>
@@ -55,6 +445,56 @@ document.addEventListener('DOMContentLoaded', function() {
     const dateField = document.getElementById('{{ form.approved_date.id_for_label }}');
     const today = new Date().toISOString().split('T')[0];
     dateField.min = today;
+    
+    // Add loading state to form submission
+    const form = document.getElementById('approveForm');
+    const submitBtn = form.querySelector('.btn-confirm-approve');
+    
+    form.addEventListener('submit', function(e) {
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+        submitBtn.disabled = true;
+    });
+    
+    // Enhanced form validation
+    const dateInput = document.getElementById('{{ form.approved_date.id_for_label }}');
+    const timeInput = document.getElementById('{{ form.approved_time.id_for_label }}');
+    
+    function validateForm() {
+        let isValid = true;
+        
+        if (!dateInput.value) {
+            dateInput.style.borderColor = '#ef4444';
+            isValid = false;
+        } else {
+            dateInput.style.borderColor = 'var(--success-color)';
+        }
+        
+        if (!timeInput.value) {
+            timeInput.style.borderColor = '#ef4444';
+            isValid = false;
+        } else {
+            timeInput.style.borderColor = 'var(--success-color)';
+        }
+        
+        submitBtn.disabled = !isValid;
+        return isValid;
+    }
+    
+    dateInput.addEventListener('change', validateForm);
+    timeInput.addEventListener('change', validateForm);
+    
+    // Smooth animations
+    const detailItems = document.querySelectorAll('.detail-item');
+    detailItems.forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            item.style.transition = 'all 0.5s ease';
+            item.style.opacity = '1';
+            item.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
 });
 </script>
 {% endblock %}

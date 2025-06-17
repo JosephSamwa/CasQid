@@ -2,144 +2,744 @@
 {% load static %}
 
 {% block content_title %}
-<h1>Appointment Management</h1>
+<style>
+    :root {
+        --primary-color: #C21CC2;
+        --secondary-color: #007A8A;
+        --text-gray: #808080;
+        --text-color: #4A4A4A;
+    }
+
+    .admin-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        border-radius: 15px;
+        padding: 25px 30px;
+        margin-bottom: 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .admin-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(255, 255, 255, 0.05) 10px,
+            rgba(255, 255, 255, 0.05) 20px
+        );
+        animation: slide 20s infinite linear;
+    }
+
+    @keyframes slide {
+        0% { transform: translateX(-50%) translateY(-50%) rotate(0deg); }
+        100% { transform: translateX(-50%) translateY(-50%) rotate(360deg); }
+    }
+
+    .admin-header h1 {
+        position: relative;
+        z-index: 2;
+        font-weight: 700;
+        font-size: 2.2rem;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .admin-header .subtitle {
+        position: relative;
+        z-index: 2;
+        opacity: 0.9;
+        font-size: 1.1rem;
+        margin-top: 8px;
+    }
+
+    .filters-section {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        margin-bottom: 25px;
+        border: 1px solid rgba(194, 28, 194, 0.1);
+    }
+
+    .filter-form {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .form-select-enhanced {
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 12px 15px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        min-width: 180px;
+    }
+
+    .form-select-enhanced:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(194, 28, 194, 0.15);
+        background: white;
+        outline: none;
+    }
+
+    .btn-filter {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        border: none;
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(194, 28, 194, 0.3);
+    }
+
+    .btn-filter:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(194, 28, 194, 0.4);
+        color: white;
+    }
+
+    .btn-add-service {
+        background: linear-gradient(135deg, #10b981, #059669);
+        border: none;
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-add-service:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+</style>
+
+<div class="admin-header">
+    <h1><i class="fas fa-calendar-check me-3"></i>Appointment Management</h1>
+    <div class="subtitle">Manage and track all client appointments efficiently</div>
+</div>
 {% endblock %}
 
 {% block content %}
 <div class="appointments">
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <form method="get" class="form-inline">
-                <div class="input-group">
-                    <select name="status" class="form-select">
-                        <option value="">All Statuses</option>
-                        {% for value, label in status_choices %}
-                        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                    <select name="service" class="form-select">
-                        <option value="">All Services</option>
-                        {% for service in services %}
-                        <option value="{{ service.id }}" {% if service_filter == service.id|stringformat:"s" %}selected{% endif %}>{{ service.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <button type="submit" class="btn btn-primary">Filter</button>
-                </div>
-            </form>
-        </div>
-        <div class="col-md-6 text-end">
-            <a href="{% url 'admin:appointments_service_add' %}" class="btn btn-success">Add New Service</a>
-        </div>
-    </div>
-
-    <form method="post" action="{% url 'admin:appointments_appointment_changelist' %}">
-        {% csrf_token %}
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Service</th>
-                        <th>Requested</th>
-                        <th>Approved</th>
-                        <th>Status</th>
-                        <th>Code</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for appointment in page_obj %}
-                    <tr>
-                        <td>
-                            <a href="{% url 'admin:appointments_appointment_change' appointment.id %}">
-                                {{ appointment.client_name }}
-                            </a>
-                            <div class="small text-muted">{{ appointment.client_email }}</div>
-                            <div class="small">{{ appointment.client_phone }}</div>
-                        </td>
-                        <td>{{ appointment.service }}</td>
-                        <td>
-                            {{ appointment.requested_date|date:"M j" }}<br>
-                            {{ appointment.requested_time|time:"g:i A" }}
-                        </td>
-                        <td>
-                            {% if appointment.approved_date %}
-                                {{ appointment.approved_date|date:"M j" }}<br>
-                                {{ appointment.approved_time|time:"g:i A" }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
-                        <td>
-                            <span class="badge 
-                                {% if appointment.status == 'approved' %}bg-success
-                                {% elif appointment.status == 'rejected' %}bg-danger
-                                {% elif appointment.status == 'pending' %}bg-warning text-dark
-                                {% elif appointment.status == 'completed' %}bg-info
-                                {% else %}bg-secondary{% endif %}">
-                                {{ appointment.get_status_display }}
-                            </span>
-                        </td>
-                        <td>{{ appointment.booking_code|default:"-" }}</td>
-                        <td>
-                            <div class="btn-group btn-group-sm">
-                                {% if appointment.status == 'pending' %}
-                                    <a href="{% url 'approve_appointment' appointment.id %}" class="btn btn-success">Approve</a>
-                                    <a href="{% url 'reject_appointment' appointment.id %}" class="btn btn-danger">Reject</a>
-                                {% elif appointment.status == 'approved' %}
-                                    <a href="{% url 'complete_appointment' appointment.id %}" class="btn btn-info">Complete</a>
-                                    <a href="{% url 'cancel_appointment' appointment.id %}" class="btn btn-warning">Cancel</a>
-                                {% endif %}
-                                {% if appointment.client_phone %}
-                                    <a href="https://wa.me/{{ appointment.client_phone|cut:' '|cut:'+' }}" 
-                                       target="_blank" class="btn btn-dark">WhatsApp</a>
-                                {% endif %}
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="row mt-3">
-            <div class="col-md-4">
-                <div class="actions">
-                    {{ block.super }}
-                </div>
+    <div class="filters-section">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <form method="get" class="filter-form">
+                    <div class="d-flex align-items-center gap-3">
+                        <label class="fw-bold text-muted">Filter by:</label>
+                        <select name="status" class="form-select form-select-enhanced">
+                            <option value="">All Statuses</option>
+                            {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        <select name="service" class="form-select form-select-enhanced">
+                            <option value="">All Services</option>
+                            {% for service in services %}
+                            <option value="{{ service.id }}" {% if service_filter == service.id|stringformat:"s" %}selected{% endif %}>{{ service.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-filter">
+                            <i class="fas fa-filter me-2"></i>Filter
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="col-md-8">
-                {% if page_obj.has_other_pages %}
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-end">
-                        {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page=1{% if status_filter %}&status={{ status_filter }}{% endif %}{% if service_filter %}&service={{ service_filter }}{% endif %}">&laquo; First</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if service_filter %}&service={{ service_filter }}{% endif %}">Previous</a>
-                        </li>
-                        {% endif %}
+            <div class="col-lg-4 text-end">
+                <a href="{% url 'admin:appointments_service_add' %}" class="btn-add-service">
+                    <i class="fas fa-plus"></i>Add New Service
+                </a>
+            </div>
+        </div>
+    </div>    <form method="post" action="{% url 'admin:appointments_appointment_changelist' %}">
+        {% csrf_token %}
+        <div class="appointments-table-container">
+            <div class="table-responsive">
+                <table class="table appointments-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-user me-2"></i>Client</th>
+                            <th><i class="fas fa-concierge-bell me-2"></i>Service</th>
+                            <th><i class="fas fa-clock me-2"></i>Requested</th>
+                            <th><i class="fas fa-check-circle me-2"></i>Approved</th>
+                            <th><i class="fas fa-info-circle me-2"></i>Status</th>
+                            <th><i class="fas fa-barcode me-2"></i>Code</th>
+                            <th><i class="fas fa-tools me-2"></i>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in page_obj %}
+                        <tr class="appointment-row" data-appointment-id="{{ appointment.id }}">
+                            <td>
+                                <div class="client-info">
+                                    <a href="{% url 'admin:appointments_appointment_change' appointment.id %}" class="client-name">
+                                        <i class="fas fa-user-circle me-2"></i>{{ appointment.client_name }}
+                                    </a>
+                                    <div class="client-details">
+                                        <div class="client-email">
+                                            <i class="fas fa-envelope me-1"></i>{{ appointment.client_email }}
+                                        </div>
+                                        <div class="client-phone">
+                                            <i class="fas fa-phone me-1"></i>{{ appointment.client_phone }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="service-info">
+                                    <div class="service-icon">
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <span class="service-name">{{ appointment.service }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="datetime-info requested">
+                                    <div class="date-part">
+                                        <i class="fas fa-calendar me-1"></i>{{ appointment.requested_date|date:"M j" }}
+                                    </div>
+                                    <div class="time-part">
+                                        <i class="fas fa-clock me-1"></i>{{ appointment.requested_time|time:"g:i A" }}
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {% if appointment.approved_date %}
+                                    <div class="datetime-info approved">
+                                        <div class="date-part">
+                                            <i class="fas fa-check-circle text-success me-1"></i>{{ appointment.approved_date|date:"M j" }}
+                                        </div>
+                                        <div class="time-part">
+                                            <i class="fas fa-clock me-1"></i>{{ appointment.approved_time|time:"g:i A" }}
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="no-approval">
+                                        <i class="fas fa-minus-circle text-muted"></i> Pending
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="status-badge-admin 
+                                    {% if appointment.status == 'approved' %}status-approved
+                                    {% elif appointment.status == 'rejected' %}status-rejected
+                                    {% elif appointment.status == 'pending' %}status-pending
+                                    {% elif appointment.status == 'completed' %}status-completed
+                                    {% else %}status-secondary{% endif %}">
+                                    {% if appointment.status == 'approved' %}
+                                        <i class="fas fa-check"></i>
+                                    {% elif appointment.status == 'rejected' %}
+                                        <i class="fas fa-times"></i>
+                                    {% elif appointment.status == 'pending' %}
+                                        <i class="fas fa-hourglass-half"></i>
+                                    {% elif appointment.status == 'completed' %}
+                                        <i class="fas fa-check-double"></i>
+                                    {% else %}
+                                        <i class="fas fa-question"></i>
+                                    {% endif %}
+                                    {{ appointment.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="booking-code-admin">
+                                    {{ appointment.booking_code|default:"-" }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    {% if appointment.status == 'pending' %}
+                                        <a href="{% url 'approve_appointment' appointment.id %}" class="btn-action btn-approve" title="Approve">
+                                            <i class="fas fa-check"></i>
+                                        </a>
+                                        <a href="{% url 'reject_appointment' appointment.id %}" class="btn-action btn-reject" title="Reject">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    {% elif appointment.status == 'approved' %}
+                                        <a href="{% url 'complete_appointment' appointment.id %}" class="btn-action btn-complete" title="Complete">
+                                            <i class="fas fa-check-double"></i>
+                                        </a>
+                                        <a href="{% url 'cancel_appointment' appointment.id %}" class="btn-action btn-cancel" title="Cancel">
+                                            <i class="fas fa-ban"></i>
+                                        </a>
+                                    {% endif %}
+                                    {% if appointment.client_phone %}
+                                        <a href="https://wa.me/{{ appointment.client_phone|cut:' '|cut:'+' }}" 
+                                           target="_blank" class="btn-action btn-whatsapp" title="WhatsApp">
+                                            <i class="fab fa-whatsapp"></i>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>        <div class="pagination-section">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <div class="actions">
+                        {{ block.super }}
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    {% if page_obj.has_other_pages %}
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-end custom-pagination">
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if status_filter %}&status={{ status_filter }}{% endif %}{% if service_filter %}&service={{ service_filter }}{% endif %}">
+                                    <i class="fas fa-angle-double-left"></i> First
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if service_filter %}&service={{ service_filter }}{% endif %}">
+                                    <i class="fas fa-angle-left"></i> Previous
+                                </a>
+                            </li>
+                            {% endif %}
 
-                        <li class="page-item disabled">
-                            <span class="page-link">
-                                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                            </span>
-                        </li>
+                            <li class="page-item disabled">
+                                <span class="page-link page-info">
+                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                                </span>
+                            </li>
 
-                        {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if service_filter %}&service={{ service_filter }}{% endif %}">Next</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if service_filter %}&service={{ service_filter }}{% endif %}">Last &raquo;</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </nav>
-                {% endif %}
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if service_filter %}&service={{ service_filter }}{% endif %}">
+                                    Next <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if service_filter %}&service={{ service_filter }}{% endif %}">
+                                    Last <i class="fas fa-angle-double-right"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </form>
 </div>
+
+<style>
+    .appointments-table-container {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(194, 28, 194, 0.1);
+        margin-bottom: 25px;
+    }
+
+    .appointments-table {
+        margin-bottom: 0;
+        border: none;
+    }
+
+    .appointments-table thead {
+        background: linear-gradient(135deg, rgba(194, 28, 194, 0.1), rgba(0, 122, 138, 0.1));
+    }
+
+    .appointments-table thead th {
+        border: none;
+        padding: 20px 15px;
+        font-weight: 600;
+        color: var(--text-color);
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid rgba(194, 28, 194, 0.1);
+    }
+
+    .appointment-row {
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .appointment-row:hover {
+        background: linear-gradient(135deg, rgba(194, 28, 194, 0.02), rgba(0, 122, 138, 0.02));
+        transform: scale(1.01);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .appointment-row td {
+        border: none;
+        padding: 20px 15px;
+        vertical-align: middle;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .client-info .client-name {
+        font-weight: 600;
+        color: var(--primary-color);
+        text-decoration: none;
+        font-size: 1rem;
+        display: block;
+        margin-bottom: 8px;
+        transition: color 0.3s ease;
+    }
+
+    .client-info .client-name:hover {
+        color: var(--secondary-color);
+    }
+
+    .client-details {
+        font-size: 0.85rem;
+        color: var(--text-gray);
+    }
+
+    .client-email, .client-phone {
+        margin-bottom: 3px;
+    }
+
+    .service-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .service-icon {
+        width: 35px;
+        height: 35px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+
+    .service-name {
+        font-weight: 500;
+        color: var(--text-color);
+    }
+
+    .datetime-info {
+        font-size: 0.9rem;
+    }
+
+    .datetime-info.requested {
+        color: var(--text-gray);
+    }
+
+    .datetime-info.approved {
+        color: var(--text-color);
+    }
+
+    .date-part, .time-part {
+        margin-bottom: 3px;
+    }
+
+    .no-approval {
+        color: var(--text-gray);
+        font-style: italic;
+    }
+
+    .status-badge-admin {
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 100px;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .status-approved {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+    }
+
+    .status-pending {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+    }
+
+    .status-rejected {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+    }
+
+    .status-completed {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+    }
+
+    .status-secondary {
+        background: linear-gradient(135deg, #6b7280, #4b5563);
+        color: white;
+    }
+
+    .booking-code-admin {
+        font-family: 'Monaco', 'Menlo', monospace;
+        background: linear-gradient(135deg, rgba(194, 28, 194, 0.1), rgba(0, 122, 138, 0.1));
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-color);
+        border: 1px solid rgba(194, 28, 194, 0.2);
+        text-align: center;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        width: 35px;
+        height: 35px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-approve {
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
+
+    .btn-approve:hover {
+        background: linear-gradient(135deg, #059669, #047857);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+        color: white;
+    }
+
+    .btn-reject {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .btn-reject:hover {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+        color: white;
+    }
+
+    .btn-complete {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+    }
+
+    .btn-complete:hover {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+        color: white;
+    }
+
+    .btn-cancel {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    .btn-cancel:hover {
+        background: linear-gradient(135deg, #d97706, #b45309);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3);
+        color: white;
+    }
+
+    .btn-whatsapp {
+        background: linear-gradient(135deg, #25d366, #128c7e);
+    }
+
+    .btn-whatsapp:hover {
+        background: linear-gradient(135deg, #128c7e, #075e54);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(37, 211, 102, 0.3);
+        color: white;
+    }
+
+    .pagination-section {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(194, 28, 194, 0.1);
+    }
+
+    .custom-pagination .page-link {
+        border: 2px solid #e9ecef;
+        color: var(--text-color);
+        padding: 10px 15px;
+        margin: 0 3px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .custom-pagination .page-link:hover {
+        border-color: var(--primary-color);
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .custom-pagination .page-info {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    @media (max-width: 768px) {
+        .filter-form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .form-select-enhanced {
+            min-width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .appointments-table {
+            font-size: 0.85rem;
+        }
+
+        .action-buttons {
+            justify-content: center;
+        }
+
+        .btn-action {
+            width: 30px;
+            height: 30px;
+            font-size: 0.8rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .appointments-table thead {
+            display: none;
+        }
+
+        .appointment-row {
+            display: block;
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(194, 28, 194, 0.1);
+        }
+
+        .appointment-row td {
+            display: block;
+            padding: 10px 0;
+            border: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .appointment-row td:last-child {
+            border-bottom: none;
+        }
+
+        .appointment-row td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add smooth animations to table rows
+    const tableRows = document.querySelectorAll('.appointment-row');
+    
+    tableRows.forEach((row, index) => {
+        row.style.opacity = '0';
+        row.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            row.style.transition = 'all 0.5s ease';
+            row.style.opacity = '1';
+            row.style.transform = 'translateY(0)';
+        }, index * 50);
+    });
+
+    // Add click-to-copy functionality for booking codes
+    const bookingCodes = document.querySelectorAll('.booking-code-admin');
+    
+    bookingCodes.forEach(code => {
+        if (code.textContent.trim() !== '-') {
+            code.style.cursor = 'pointer';
+            code.title = 'Click to copy booking code';
+            
+            code.addEventListener('click', function() {
+                navigator.clipboard.writeText(this.textContent.trim()).then(() => {
+                    const originalBg = this.style.background;
+                    this.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.3))';
+                    this.textContent = 'Copied!';
+                    
+                    setTimeout(() => {
+                        this.style.background = originalBg;
+                        this.textContent = code.textContent.trim();
+                    }, 2000);
+                });
+            });
+        }
+    });
+
+    // Enhanced filter functionality
+    const filterForm = document.querySelector('.filter-form');
+    const statusSelect = filterForm.querySelector('[name="status"]');
+    const serviceSelect = filterForm.querySelector('[name="service"]');
+
+    [statusSelect, serviceSelect].forEach(select => {
+        select.addEventListener('change', function() {
+            if (this.value) {
+                this.style.borderColor = 'var(--primary-color)';
+                this.style.background = 'white';
+            } else {
+                this.style.borderColor = '#e9ecef';
+                this.style.background = '#f8f9fa';
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

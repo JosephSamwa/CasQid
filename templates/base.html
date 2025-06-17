@@ -173,10 +173,44 @@
             width: 100%; /* Add this to ensure full width */
             max-width: 100%; /* Prevent overflow issues */
         }
+        .footer{
+             background-color: var(--primary-color);
+        }
+        .footer-text {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+        }
         
-        footer {
-            background-color: var(--primary-color);
+        .footer-text a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .footer-text a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .footer-text a:hover {
             color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-text a:hover::after {
+            width: 100%;
         }
 
         /* LinkedIn-style Messages */
@@ -229,7 +263,7 @@
             margin: -0.5rem;
         }
 
-        /* Feedback CTA Button */
+                /* Feedback CTA Button */
         .feedback-btn {
             position: fixed;
             left: 20px;
@@ -243,8 +277,15 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 60px; /* Minimum width for icon-only state */
+            height: 60px; /* Fixed height */
+            overflow: hidden;
+            white-space: nowrap;
         }
-
+        
         .feedback-btn:hover {
             transform: scale(1.05);
             color: white;
@@ -253,13 +294,37 @@
         .feedback-btn.expanded {
             transform: scale(1.15);
             box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            width: auto;
+            padding: 15px 25px;
+            border-radius: 25px;
         }
         
         .feedback-btn.shrunk {
             transform: scale(0.9);
             box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            width: 60px;
+            height: 60px;
+            padding: 0;
+            border-radius: 50%;
         }
-
+        
+        /* Hide text when button is shrunk */
+        .feedback-btn.shrunk .feedback-text {
+            opacity: 0;
+            width: 0;
+            margin-left: 0;
+            overflow: hidden;
+        }
+        
+        .feedback-btn .feedback-text {
+            margin-left: 8px;
+            transition: all 0.3s ease;
+            opacity: 1;
+        }
+        
+        .feedback-btn i {
+            flex-shrink: 0; /* Icon never shrinks */
+        }
         /* Star Rating in Modal */
         .rating {
             display: inline-block;
@@ -623,15 +688,15 @@
     <!-- Footer -->
 
     <footer class="py-4 text-center mt-5">
-        <div class="container">
-            <p class="mb-1 text-muted">
-                &copy; 2025 CasQid Travel Agency. All rights reserved.
+               <!-- Copyright -->
+        <div class="text-center">
+            <p class="footer-text mb-2">
+                <i class="fas fa-copyright me-1"></i>2025 CasQid Travel Agency. All rights reserved.
             </p>
-            <p class="mb-0 text-muted">
-                Powered by 
-                <a href="https://elitesamttech.co.ke" target="_blank" class="text-decoration-none fw-bold">
-                    Samtech Elite Solutions
-                </a>
+            <p class="footer-text mb-0">
+                <i class="fas fa-code me-1"></i>Crafted with 
+                <i class="fas fa-heart text-danger mx-1"></i>
+                by <a href="https://elitesamttech.co.ke" target="_blank">Samtech Elite Solutions</a>
             </p>
         </div>
     </footer>
@@ -687,12 +752,11 @@
         </div>
     </div>
 
-
-       <!-- Feedback Button -->
-    <button type="button" class="feedback-btn" id="feedbackBtn" data-bs-toggle="modal" data-bs-target="#feedbackModal">
-        <i class="fas fa-comment-dots me-2"></i>Share Your Feedback
-    </button>
-
+<!-- Feedback Button -->
+<button type="button" class="feedback-btn" id="feedbackBtn" data-bs-toggle="modal" data-bs-target="#feedbackModal">
+    <i class="fas fa-comment-dots"></i>
+    <span class="feedback-text">Share Your Feedback</span>
+</button>
     <!-- Feedback Modal -->
     <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
         <div class="modal-dialog">

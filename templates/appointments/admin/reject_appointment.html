@@ -1,39 +1,538 @@
 {% extends "admin/base_site.html" %}
 
 {% block content %}
-<div class="card">
-    <div class="card-header bg-danger text-white">
-        <h2 class="mb-0">Reject Appointment</h2>
-    </div>
-    <div class="card-body">
-        <div class="mb-4">
-            <h4>Appointment Details</h4>
-            <ul>
-                <li><strong>Client:</strong> {{ appointment.client_name }}</li>
-                <li><strong>Service:</strong> {{ appointment.service }}</li>
-                <li><strong>Requested:</strong> {{ appointment.requested_date|date:"M j, Y" }} at {{ appointment.requested_time|time:"g:i A" }}</li>
-                <li><strong>Contact:</strong> {{ appointment.client_phone }} / {{ appointment.client_email }}</li>
-            </ul>
-        </div>
+<style>
+    :root {
+        --primary-color: #C21CC2;
+        --secondary-color: #007A8A;
+        --text-gray: #808080;
+        --text-color: #4A4A4A;
+        --danger-color: #ef4444;
+        --danger-dark: #dc2626;
+    }
 
-        <form method="post">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="{{ form.rejection_reason.id_for_label }}" class="form-label">Reason for Rejection</label>
-                {{ form.rejection_reason }}
-                {% if form.rejection_reason.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.rejection_reason.errors|join:", " }}
+    .reject-container {
+        min-height: 80vh;
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(220, 38, 38, 0.05) 100%);
+        padding: 40px 0;
+    }
+
+    .reject-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .reject-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header-reject {
+        background: linear-gradient(135deg, var(--danger-color) 0%, var(--danger-dark) 100%);
+        padding: 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-header-reject::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(255, 255, 255, 0.05) 10px,
+            rgba(255, 255, 255, 0.05) 20px
+        );
+        animation: slide 20s infinite linear;
+    }
+
+    @keyframes slide {
+        0% { transform: translateX(-50%) translateY(-50%) rotate(0deg); }
+        100% { transform: translateX(-50%) translateY(-50%) rotate(360deg); }
+    }
+
+    .card-header-reject h2 {
+        position: relative;
+        z-index: 2;
+        font-weight: 700;
+        font-size: 2rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        margin: 0;
+        color: white;
+    }
+
+    .card-header-reject .subtitle {
+        position: relative;
+        z-index: 2;
+        opacity: 0.9;
+        font-size: 1.1rem;
+        margin-top: 8px;
+        color: white;
+    }
+
+    .card-body-reject {
+        padding: 40px 30px;
+    }
+
+    .appointment-details {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(220, 38, 38, 0.05));
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(239, 68, 68, 0.1);
+    }
+
+    .appointment-details h4 {
+        color: var(--text-color);
+        font-weight: 700;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 15px;
+        background: white;
+        border-radius: 12px;
+        border: 1px solid rgba(239, 68, 68, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .detail-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+    }
+
+    .detail-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--danger-color), var(--danger-dark));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .detail-content {
+        flex-grow: 1;
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: var(--text-color);
+        font-size: 0.9rem;
+        margin-bottom: 3px;
+    }
+
+    .detail-value {
+        color: var(--text-gray);
+        font-size: 0.95rem;
+    }
+
+    .form-section {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        border: 1px solid rgba(239, 68, 68, 0.1);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.05);
+    }
+
+    .form-group-reject {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .form-label-reject {
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 10px;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-control-reject {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 15px 20px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .form-control-reject:focus {
+        border-color: var(--danger-color);
+        box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.15);
+        background: white;
+        outline: none;
+    }
+
+    .form-control-reject:hover {
+        border-color: var(--danger-dark);
+        background: white;
+    }
+
+    .form-text-reject {
+        font-size: 0.9rem;
+        color: var(--text-gray);
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 15px;
+        justify-content: space-between;
+        margin-top: 30px;
+        align-items: center;
+    }
+
+    .btn-cancel-reject {
+        background: linear-gradient(135deg, #6b7280, #4b5563);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 12px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+    }
+
+    .btn-cancel-reject:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(107, 114, 128, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-confirm-reject {
+        background: linear-gradient(135deg, var(--danger-color) 0%, var(--danger-dark) 100%);
+        border: none;
+        padding: 15px 40px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-confirm-reject::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-confirm-reject:hover::before {
+        left: 100%;
+    }
+
+    .btn-confirm-reject:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(239, 68, 68, 0.4);
+        color: white;
+    }
+
+    .btn-confirm-reject:active {
+        transform: translateY(0);
+    }
+
+    .invalid-feedback {
+        display: block;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin-top: 8px;
+        font-size: 0.85rem;
+        color: #dc2626;
+    }
+
+    .warning-section {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.1));
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .warning-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    .warning-content {
+        flex-grow: 1;
+    }
+
+    .warning-title {
+        font-weight: 600;
+        color: #b45309;
+        margin-bottom: 5px;
+    }
+
+    .warning-text {
+        color: #92400e;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .reject-container {
+            padding: 20px 0;
+        }
+        
+        .card-header-reject {
+            padding: 25px 20px;
+        }
+        
+        .card-header-reject h2 {
+            font-size: 1.6rem;
+        }
+        
+        .card-body-reject {
+            padding: 30px 20px;
+        }
+
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .button-group {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-cancel-reject,
+        .btn-confirm-reject {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="reject-container">
+    <div class="container">
+        <div class="reject-card">
+            <div class="card-header-reject">
+                <h2><i class="fas fa-times-circle me-3"></i>Reject Appointment</h2>
+                <div class="subtitle">Provide a reason for rejection and notify the client</div>
+            </div>
+            
+            <div class="card-body-reject">
+                <div class="appointment-details">
+                    <h4><i class="fas fa-info-circle me-2"></i>Appointment Details</h4>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="detail-content">
+                                <div class="detail-label">Client Name</div>
+                                <div class="detail-value">{{ appointment.client_name }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-concierge-bell"></i>
+                            </div>
+                            <div class="detail-content">
+                                <div class="detail-label">Service</div>
+                                <div class="detail-value">{{ appointment.service }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="detail-content">
+                                <div class="detail-label">Requested Date & Time</div>
+                                <div class="detail-value">{{ appointment.requested_date|date:"M j, Y" }} at {{ appointment.requested_time|time:"g:i A" }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="detail-content">
+                                <div class="detail-label">Phone</div>
+                                <div class="detail-value">{{ appointment.client_phone }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="detail-content">
+                                <div class="detail-label">Email</div>
+                                <div class="detail-value">{{ appointment.client_email }}</div>
+                            </div>
+                        </div>
                     </div>
-                {% endif %}
-                <div class="form-text">This reason will be sent to the client.</div>
-            </div>
+                </div>
 
-            <div class="d-flex justify-content-between">
-                <a href="{% url 'admin_appointment_list' %}" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-danger">Confirm Rejection</button>
+                <div class="warning-section">
+                    <div class="warning-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="warning-content">
+                        <div class="warning-title">Important Notice</div>
+                        <div class="warning-text">This action will permanently reject the appointment and notify the client via email. Please provide a clear reason for rejection.</div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <form method="post" id="rejectForm">
+                        {% csrf_token %}
+                        <div class="form-group-reject">
+                            <label for="{{ form.rejection_reason.id_for_label }}" class="form-label-reject">
+                                <i class="fas fa-comment-alt text-danger"></i>
+                                Reason for Rejection
+                            </label>
+                            {{ form.rejection_reason|add_class:"form-control form-control-reject" }}
+                            {% if form.rejection_reason.errors %}
+                                <div class="invalid-feedback">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                    {{ form.rejection_reason.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                            <div class="form-text-reject">
+                                <i class="fas fa-info-circle"></i>
+                                This reason will be sent to the client via email.
+                            </div>
+                        </div>
+
+                        <div class="button-group">
+                            <a href="{% url 'admin_appointment_list' %}" class="btn-cancel-reject">
+                                <i class="fas fa-arrow-left"></i>
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn-confirm-reject">
+                                <i class="fas fa-times-circle"></i>
+                                Confirm Rejection
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </form>
+        </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add loading state to form submission
+    const form = document.getElementById('rejectForm');
+    const submitBtn = form.querySelector('.btn-confirm-reject');
+    const reasonTextarea = document.getElementById('{{ form.rejection_reason.id_for_label }}');
+    
+    form.addEventListener('submit', function(e) {
+        if (!reasonTextarea.value.trim()) {
+            e.preventDefault();
+            reasonTextarea.style.borderColor = 'var(--danger-color)';
+            reasonTextarea.focus();
+            return false;
+        }
+        
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+        submitBtn.disabled = true;
+    });
+    
+    // Enhanced form validation
+    function validateForm() {
+        const isValid = reasonTextarea.value.trim().length > 0;
+        
+        if (isValid) {
+            reasonTextarea.style.borderColor = 'var(--danger-color)';
+            submitBtn.disabled = false;
+        } else {
+            reasonTextarea.style.borderColor = '#e9ecef';
+            submitBtn.disabled = true;
+        }
+        
+        return isValid;
+    }
+    
+    reasonTextarea.addEventListener('input', validateForm);
+    reasonTextarea.addEventListener('blur', validateForm);
+    
+    // Initial validation
+    validateForm();
+    
+    // Smooth animations
+    const detailItems = document.querySelectorAll('.detail-item');
+    detailItems.forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            item.style.transition = 'all 0.5s ease';
+            item.style.opacity = '1';
+            item.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+</script>
 {% endblock %}

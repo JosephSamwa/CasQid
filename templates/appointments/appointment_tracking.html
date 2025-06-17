@@ -1,33 +1,340 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">Track Your Appointment</h2>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email Address</label>
-                        <input type="email" class="form-control" id="email" name="email" 
-                               placeholder="Enter the email you used to book">
-                        <div class="form-text">OR</div>
+<style>
+    .tracking-container {
+        min-height: 80vh;
+        background: linear-gradient(135deg, rgba(194, 28, 194, 0.05) 0%, rgba(0, 122, 138, 0.05) 100%);
+        padding: 40px 0;
+    }
+
+    .tracking-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .tracking-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, #C21CC2 0%, #007A8A 100%);
+        padding: 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-header-custom::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(255, 255, 255, 0.05) 10px,
+            rgba(255, 255, 255, 0.05) 20px
+        );
+        animation: slide 20s infinite linear;
+    }
+
+    @keyframes slide {
+        0% { transform: translateX(-50%) translateY(-50%) rotate(0deg); }
+        100% { transform: translateX(-50%) translateY(-50%) rotate(360deg); }
+    }
+
+    .card-header-custom h2 {
+        position: relative;
+        z-index: 2;
+        font-weight: 700;
+        font-size: 2rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        margin: 0;
+    }
+
+    .card-header-custom .subtitle {
+        position: relative;
+        z-index: 2;
+        opacity: 0.9;
+        font-size: 1.1rem;
+        margin-top: 8px;
+    }
+
+    .form-container {
+        padding: 40px 30px;
+    }
+
+    .form-group-enhanced {
+        margin-bottom: 30px;
+        position: relative;
+    }
+
+    .form-label-enhanced {
+        font-weight: 600;
+        color: #4A4A4A;
+        margin-bottom: 10px;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-control-enhanced {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 15px 20px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .form-control-enhanced:focus {
+        border-color: #C21CC2;
+        box-shadow: 0 0 0 0.2rem rgba(194, 28, 194, 0.15);
+        background: white;
+        outline: none;
+    }
+
+    .form-control-enhanced:hover {
+        border-color: #007A8A;
+        background: white;
+    }
+
+    .or-divider {
+        text-align: center;
+        margin: 25px 0;
+        position: relative;
+    }
+
+    .or-divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #dee2e6, transparent);
+    }
+
+    .or-divider span {
+        background: white;
+        padding: 0 20px;
+        color: #808080;
+        font-weight: 500;
+        font-size: 0.9rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn-track {
+        background: linear-gradient(135deg, #C21CC2 0%, #007A8A 100%);
+        border: none;
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(194, 28, 194, 0.3);
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .btn-track::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-track:hover::before {
+        left: 100%;
+    }
+
+    .btn-track:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(194, 28, 194, 0.4);
+        color: white;
+    }
+
+    .btn-track:active {
+        transform: translateY(0);
+    }
+
+    .info-section {
+        background: linear-gradient(135deg, rgba(194, 28, 194, 0.05), rgba(0, 122, 138, 0.05));
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 30px;
+        border: 1px solid rgba(194, 28, 194, 0.1);
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 15px;
+        color: #4A4A4A;
+    }
+
+    .info-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #C21CC2, #007A8A);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .tracking-container {
+            padding: 20px 0;
+        }
+        
+        .card-header-custom {
+            padding: 25px 20px;
+        }
+        
+        .card-header-custom h2 {
+            font-size: 1.6rem;
+        }
+        
+        .form-container {
+            padding: 30px 20px;
+        }
+    }
+</style>
+
+<div class="tracking-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 col-sm-10">
+                <div class="card tracking-card">
+                    <div class="card-header-custom">
+                        <h2><i class="fas fa-search me-3"></i>Track Your Appointment</h2>
+                        <div class="subtitle">Find your appointment status quickly and easily</div>
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="booking_code" class="form-label">Booking Code</label>
-                        <input type="text" class="form-control" id="booking_code" name="booking_code" 
-                               placeholder="Enter your booking code (e.g., APPT-010123-ABCD)">
+                    <div class="form-container">
+                        <form method="post" id="trackingForm">
+                            {% csrf_token %}
+                            
+                            <div class="form-group-enhanced">
+                                <label for="email" class="form-label-enhanced">
+                                    <i class="fas fa-envelope text-primary"></i>
+                                    Email Address
+                                </label>
+                                <input type="email" 
+                                       class="form-control form-control-enhanced" 
+                                       id="email" 
+                                       name="email" 
+                                       placeholder="Enter the email you used to book"
+                                       autocomplete="email">
+                            </div>
+                            
+                            <div class="or-divider">
+                                <span>OR</span>
+                            </div>
+                            
+                            <div class="form-group-enhanced">
+                                <label for="booking_code" class="form-label-enhanced">
+                                    <i class="fas fa-ticket-alt text-info"></i>
+                                    Booking Code
+                                </label>
+                                <input type="text" 
+                                       class="form-control form-control-enhanced" 
+                                       id="booking_code" 
+                                       name="booking_code" 
+                                       placeholder="Enter your booking code (e.g., APPT-010123-ABCD)"
+                                       style="text-transform: uppercase;">
+                            </div>
+                            
+                            <button type="submit" class="btn btn-track">
+                                <i class="fas fa-search me-2"></i>
+                                Track My Appointment
+                            </button>
+                        </form>
+                        
+                        <div class="info-section">
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-info"></i>
+                                </div>
+                                <div>
+                                    <strong>Need Help?</strong><br>
+                                    <small>Enter either your email address or booking code to track your appointment status.</small>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div>
+                                    <strong>Real-time Updates</strong><br>
+                                    <small>Get instant updates on your appointment status, including approvals and schedule changes.</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <button type="submit" class="btn btn-primary">Track Appointment</button>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('trackingForm');
+    const emailInput = document.getElementById('email');
+    const bookingCodeInput = document.getElementById('booking_code');
+    
+    // Auto-uppercase booking code
+    bookingCodeInput.addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+    });
+    
+    // Enhanced form validation
+    form.addEventListener('submit', function(e) {
+        const emailValue = emailInput.value.trim();
+        const bookingCodeValue = bookingCodeInput.value.trim();
+        
+        if (!emailValue && !bookingCodeValue) {
+            e.preventDefault();
+            alert('Please enter either your email address or booking code.');
+            return false;
+        }
+        
+        // Add loading state to button
+        const submitBtn = form.querySelector('.btn-track');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Searching...';
+        submitBtn.disabled = true;
+    });
+});
+</script>
 {% endblock %}
