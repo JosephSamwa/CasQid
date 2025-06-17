@@ -31,6 +31,8 @@ class AppointmentForm(forms.ModelForm):
         
         if requested_date and requested_time:
             requested_datetime = datetime.datetime.combine(requested_date, requested_time)
+            # Make the datetime timezone-aware
+            requested_datetime = timezone.make_aware(requested_datetime)
             if requested_datetime < timezone.now():
                 raise ValidationError("You cannot book an appointment in the past.")
         

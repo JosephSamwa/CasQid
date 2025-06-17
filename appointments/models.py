@@ -10,15 +10,7 @@ import datetime
 import random
 import string
 from django.core.exceptions import ValidationError
-
-class Service(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
-    duration = models.PositiveIntegerField(help_text="Duration in minutes", default=30)
-    active = models.BooleanField(default=True)
-    
-    def __str__(self):
-        return self.name
+from services.models import Service 
 
 class Appointment(models.Model):
     STATUS_CHOICES = [
@@ -59,7 +51,7 @@ class Appointment(models.Model):
     
     def send_confirmation_email(self):
         subject = f"Appointment Request Received: {self.service.name}"
-        html_message = render_to_string('appointments/email_confirmation.html', {
+        html_message = render_to_string('appointments/email/confirmation.html', {
             'appointment': self,
         })
         plain_message = strip_tags(html_message)
@@ -73,7 +65,7 @@ class Appointment(models.Model):
     
     def send_approval_email(self):
         subject = f"Appointment Approved: {self.service.name} - {self.booking_code}"
-        html_message = render_to_string('appointments/email_approval.html', {
+        html_message = render_to_string('appointments/email/approval.html', {
             'appointment': self,
         })
         plain_message = strip_tags(html_message)
@@ -87,7 +79,7 @@ class Appointment(models.Model):
     
     def send_rejection_email(self):
         subject = f"Appointment Rejected: {self.service.name}"
-        html_message = render_to_string('appointments/email_rejection.html', {
+        html_message = render_to_string('appointments/email/rejection.html', {
             'appointment': self,
         })
         plain_message = strip_tags(html_message)

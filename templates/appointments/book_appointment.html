@@ -1,233 +1,521 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow-lg border-0 rounded-lg overflow-hidden">
-                <!-- Card Header with Gradient Background -->
-                <div class="card-header py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                    <h2 class="text-white mb-0 text-center font-weight-bold">Book Your Appointment</h2>
-                    <p class="text-white-50 mb-0 text-center">We'll get back to you shortly to confirm your booking</p>
+<div class="booking-container">
+    <div class="booking-card">
+        <!-- Header with animated gradient -->
+        <div class="card-header">
+            <div class="header-content">
+                <div class="icon-wrapper">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h1>Book Your Appointment</h1>
+                <p>We'll confirm your booking within 24 hours</p>
+            </div>
+            <div class="header-decoration"></div>
+        </div>
+        
+        <!-- Progress indicator -->
+        <div class="progress-section">
+            <div class="progress-steps">
+                <div class="step active">
+                    <div class="step-number">1</div>
+                    <span>Service</span>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <span>Details</span>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <span>Confirm</span>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+        
+        <!-- Form content -->
+        <div class="form-container">
+            <form method="post" class="booking-form" novalidate>
+                {% csrf_token %}
+                
+                <!-- Service Selection -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <i class="fas fa-concierge-bell"></i>
+                        <h3>Select Service</h3>
+                    </div>
+                    <div class="input-wrapper">
+                        {{ form.service }}
+                        {% if form.service.errors %}
+                            <div class="error-message">{{ form.service.errors|join:", " }}</div>
+                        {% endif %}
+                    </div>
                 </div>
                 
-                <!-- Card Body -->
-                <div class="card-body px-5 py-4">
-                    <form method="post" class="needs-validation" novalidate>
-                        {% csrf_token %}
-                        
-                        <!-- Progress Indicator -->
-                        <div class="mb-4">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <small class="text-muted">Step 1 of 3</small>
-                                <small class="text-primary">Personal Information</small>
-                            </div>
-                            <div class="progress" style="height: 6px;">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: 33%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div>
-                        
-                        <!-- Service Selection -->
-                        <div class="mb-4">
-                            <label for="{{ form.service.id_for_label }}" class="form-label fw-bold">Select Service</label>
+                <!-- Personal Information -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <i class="fas fa-user-circle"></i>
+                        <h3>Your Information</h3>
+                    </div>
+                    <div class="form-grid">
+                        <div class="input-wrapper">
+                            <label for="{{ form.client_name.id_for_label }}">Full Name</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-light">
-                                    <i class="fas fa-concierge-bell text-primary"></i>
-                                </span>
-                                {{ form.service }}
+                                <i class="fas fa-user"></i>
+                                {{ form.client_name }}
                             </div>
-                            {% if form.service.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.service.errors|join:", " }}
-                                </div>
+                            {% if form.client_name.errors %}
+                                <div class="error-message">{{ form.client_name.errors|join:", " }}</div>
                             {% endif %}
                         </div>
                         
-                        <!-- Personal Information Section -->
-                        <div class="mb-4">
-                            <h5 class="mb-3 text-primary"><i class="fas fa-user-circle me-2"></i>Your Information</h5>
-                            
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="{{ form.client_name.id_for_label }}" class="form-label">Full Name</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light">
-                                            <i class="fas fa-user text-primary"></i>
-                                        </span>
-                                        {{ form.client_name }}
-                                    </div>
-                                    {% if form.client_name.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.client_name.errors|join:", " }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                
-                                <div class="col-md-6">
-                                    <label for="{{ form.client_email.id_for_label }}" class="form-label">Email Address</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light">
-                                            <i class="fas fa-envelope text-primary"></i>
-                                        </span>
-                                        {{ form.client_email }}
-                                    </div>
-                                    {% if form.client_email.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.client_email.errors|join:", " }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                
-                                <div class="col-md-6">
-                                    <label for="{{ form.client_phone.id_for_label }}" class="form-label">Phone Number</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light">
-                                            <i class="fas fa-phone text-primary"></i>
-                                        </span>
-                                        {{ form.client_phone }}
-                                    </div>
-                                    {% if form.client_phone.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.client_phone.errors|join:", " }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Appointment Time Section -->
-                        <div class="mb-4">
-                            <h5 class="mb-3 text-primary"><i class="far fa-calendar-alt me-2"></i>Appointment Time</h5>
-                            
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="{{ form.requested_date.id_for_label }}" class="form-label">Preferred Date</label>
-                                    <div class="input-group datepicker">
-                                        <span class="input-group-text bg-light">
-                                            <i class="far fa-calendar text-primary"></i>
-                                        </span>
-                                        {{ form.requested_date }}
-                                    </div>
-                                    {% if form.requested_date.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.requested_date.errors|join:", " }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                
-                                <div class="col-md-6">
-                                    <label for="{{ form.requested_time.id_for_label }}" class="form-label">Preferred Time</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light">
-                                            <i class="far fa-clock text-primary"></i>
-                                        </span>
-                                        {{ form.requested_time }}
-                                    </div>
-                                    {% if form.requested_time.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.requested_time.errors|join:", " }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Additional Notes -->
-                        <div class="mb-4">
-                            <label for="{{ form.notes.id_for_label }}" class="form-label fw-bold">Additional Notes (Optional)</label>
+                        <div class="input-wrapper">
+                            <label for="{{ form.client_email.id_for_label }}">Email Address</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-light align-items-start">
-                                    <i class="fas fa-edit text-primary mt-1"></i>
-                                </span>
-                                {{ form.notes }}
+                                <i class="fas fa-envelope"></i>
+                                {{ form.client_email }}
                             </div>
+                            {% if form.client_email.errors %}
+                                <div class="error-message">{{ form.client_email.errors|join:", " }}</div>
+                            {% endif %}
                         </div>
                         
-                        <!-- Form Actions -->
-                        <div class="d-grid gap-3 d-md-flex justify-content-md-end mt-4">
-                            <button type="reset" class="btn btn-outline-secondary px-4">
-                                <i class="fas fa-undo me-2"></i>Reset
-                            </button>
-                            <button type="submit" class="btn btn-primary px-4">
-                                <i class="far fa-paper-plane me-2"></i>Submit Request
-                            </button>
+                        <div class="input-wrapper">
+                            <label for="{{ form.client_phone.id_for_label }}">Phone Number</label>
+                            <div class="input-group">
+                                <i class="fas fa-phone"></i>
+                                {{ form.client_phone }}
+                            </div>
+                            {% if form.client_phone.errors %}
+                                <div class="error-message">{{ form.client_phone.errors|join:", " }}</div>
+                            {% endif %}
                         </div>
-                        
-                        <!-- Privacy Notice -->
-                        <div class="mt-4 text-center text-muted small">
-                            <p>Your information is secure and will only be used to confirm your appointment.</p>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
+                
+                <!-- Appointment Time -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <i class="fas fa-clock"></i>
+                        <h3>Preferred Time</h3>
+                    </div>
+                    <div class="form-grid two-col">
+                        <div class="input-wrapper">
+                            <label for="{{ form.requested_date.id_for_label }}">Date</label>
+                            <div class="input-group">
+                                <i class="fas fa-calendar-alt"></i>
+                                {{ form.requested_date }}
+                            </div>
+                            {% if form.requested_date.errors %}
+                                <div class="error-message">{{ form.requested_date.errors|join:", " }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="input-wrapper">
+                            <label for="{{ form.requested_time.id_for_label }}">Time</label>
+                            <div class="input-group">
+                                <i class="fas fa-clock"></i>
+                                {{ form.requested_time }}
+                            </div>
+                            {% if form.requested_time.errors %}
+                                <div class="error-message">{{ form.requested_time.errors|join:", " }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Additional Notes -->
+                <div class="form-section">
+                    <div class="input-wrapper">
+                        <label for="{{ form.notes.id_for_label }}">Additional Notes (Optional)</label>
+                        <div class="input-group">
+                            <i class="fas fa-edit"></i>
+                            {{ form.notes }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <button type="reset" class="btn btn-secondary">
+                        <i class="fas fa-undo"></i>
+                        Reset
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        Book Appointment
+                    </button>
+                </div>
+                
+                <!-- Privacy Notice -->
+                <div class="privacy-notice">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Your information is secure and will only be used to confirm your appointment</span>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 <style>
-    /* Custom Styles */
-    .card {
-        border: none;
-        transition: transform 0.3s ease;
-    }
-    
-    .card:hover {
-        transform: translateY(-5px);
-    }
-    
-    .form-control, .form-select {
-        border-left: 0;
-        padding-left: 0;
-        border-radius: 0 0.375rem 0.375rem 0 !important;
-    }
-    
-    .input-group-text {
-        border-right: 0;
-        background-color: #f8f9fa !important;
-        border-radius: 0.375rem 0 0 0.375rem !important;
-    }
-    
-    textarea.form-control {
-        min-height: 100px;
-    }
-    
-    .btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border: none;
-    }
-    
-    .btn-outline-secondary:hover {
-        background-color: #f8f9fa;
-    }
-    
-    /* Datepicker icon fix */
-    .datepicker.input-group .input-group-text {
-        cursor: pointer;
-    }
+* { box-sizing: border-box; }
+
+.booking-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    padding: 2rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.booking-card {
+    max-width: 800px;
+    width: 100%;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    overflow: hidden;
+    animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.header-content {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.icon-wrapper {
+    width: 80px;
+    height: 80px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    backdrop-filter: blur(10px);
+}
+
+.icon-wrapper i {
+    font-size: 2rem;
+    color: white;
+}
+
+.card-header h1 {
+    margin: 0 0 0.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.card-header p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 1.1rem;
+}
+
+.header-decoration {
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.progress-section {
+    padding: 2rem;
+    background: #f8faff;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.step.active .step-number {
+    background: #667eea;
+    color: white;
+    transform: scale(1.1);
+}
+
+.step span {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.progress-bar {
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    width: 33%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.form-container {
+    padding: 2rem;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    color: #334155;
+}
+
+.section-header i {
+    font-size: 1.25rem;
+    margin-right: 0.75rem;
+    color: #667eea;
+}
+
+.section-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.form-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.form-grid:not(.two-col) {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.two-col {
+    grid-template-columns: 1fr 1fr;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-group i {
+    position: absolute;
+    left: 1rem;
+    color: #9ca3af;
+    z-index: 2;
+    font-size: 1rem;
+}
+
+.form-control, .form-select, select, input, textarea {
+    width: 100%;
+    padding: 0.875rem 1rem 0.875rem 2.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-control:focus, .form-select:focus, select:focus, input:focus, textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 0.875rem 2rem;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.btn-secondary:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+}
+
+.privacy-notice {
+    text-align: center;
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #f8faff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.privacy-notice i {
+    color: #10b981;
+}
+
+@media (max-width: 768px) {
+    .booking-container { padding: 1rem; }
+    .card-header { padding: 2rem 1.5rem 1.5rem; }
+    .form-container, .progress-section { padding: 1.5rem; }
+    .form-grid.two-col { grid-template-columns: 1fr; }
+    .form-actions { flex-direction: column; }
+    .progress-steps { gap: 1rem; }
+    .step span { font-size: 0.8rem; }
+}
 </style>
 
-<!-- Include Font Awesome for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
-<!-- Include Flatpickr for better date/time input -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
-    // Initialize datepicker
-    document.addEventListener('DOMContentLoaded', function() {
-        flatpickr("#id_requested_date", {
-            dateFormat: "Y-m-d",
-            minDate: "today"
+document.addEventListener('DOMContentLoaded', function() {
+    // Enhanced date picker
+    flatpickr("#id_requested_date", {
+        dateFormat: "Y-m-d",
+        minDate: "today",
+        theme: "material_blue"
+    });
+    
+    // Enhanced time picker
+    flatpickr("#id_requested_time", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: false,
+        theme: "material_blue"
+    });
+    
+    // Form validation animations
+    const inputs = document.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('invalid', function() {
+            this.style.borderColor = '#ef4444';
+            this.style.animation = 'shake 0.5s ease-in-out';
         });
         
-        // Time picker initialization if needed
-         flatpickr("#id_requested_time", {
-             enableTime: true,
-             noCalendar: true,
-             dateFormat: "H:i",
-             time_24hr: true
-         });
+        input.addEventListener('input', function() {
+            if (this.checkValidity()) {
+                this.style.borderColor = '#10b981';
+            }
+        });
     });
+});
+
+// Shake animation for validation errors
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+`;
+document.head.appendChild(style);
 </script>
 {% endblock %}

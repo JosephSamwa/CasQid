@@ -5,7 +5,7 @@
 /**
 
 <script>
-EUR(function(){
+$(function(){
 	jQuery.ajaxQueue({
 		url: "test.php",
 		success: function(html){ jQuery("ul").append(html); }

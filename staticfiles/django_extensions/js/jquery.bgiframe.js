@@ -4,10 +4,10 @@
  * Version 2.1.2
  */
 
-(function(EUR){
+(function($){
 
-EUR.fn.bgiframe = (EUR.browser.msie && /msie 6\.0/i.test(navigator.userAgent) ? function(s) {
-    s = EUR.extend({
+$.fn.bgiframe = ($.browser.msie && /msie 6\.0/i.test(navigator.userAgent) ? function(s) {
+    s = $.extend({
         top     : 'auto', // auto == .currentStyle.borderTopWidth
         left    : 'auto', // auto == .currentStyle.borderLeftWidth
         width   : 'auto', // auto == offsetWidth
@@ -24,13 +24,13 @@ EUR.fn.bgiframe = (EUR.browser.msie && /msie 6\.0/i.test(navigator.userAgent) ? 
                        'height:'+(s.height=='auto'?'expression(this.parentNode.offsetHeight+\'px\')':prop(s.height))+';'+
                 '"/>';
     return this.each(function() {
-        if ( EUR(this).children('iframe.bgiframe').length === 0 )
+        if ( $(this).children('iframe.bgiframe').length === 0 )
             this.insertBefore( document.createElement(html), this.firstChild );
     });
 } : function() { return this; });
 
 // old alias
-EUR.fn.bgIframe = EUR.fn.bgiframe;
+$.fn.bgIframe = $.fn.bgiframe;
 
 function prop(n) {
     return n && n.constructor === Number ? n + 'px' : n;

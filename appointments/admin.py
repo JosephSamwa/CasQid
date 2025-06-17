@@ -3,9 +3,10 @@ from django.contrib.admin import SimpleListFilter
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.html import format_html
-from .models import Appointment, Service
+from .models import Appointment
 from .forms import AppointmentApprovalForm, AppointmentRejectionForm
 from django.shortcuts import render
+from services.models import Service
 
 class StatusFilter(SimpleListFilter):
     title = 'status'
@@ -32,11 +33,6 @@ class ServiceFilter(SimpleListFilter):
             return queryset.filter(service_id=self.value())
         return queryset
 
-@admin.register(Service)
-class ServiceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'duration', 'active')
-    list_editable = ('active',)
-    search_fields = ('name',)
 
 @admin.register(Appointment)
 class AppointmentAdmin(admin.ModelAdmin):
