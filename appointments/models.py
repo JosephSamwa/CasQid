@@ -9,10 +9,16 @@ from django.conf import settings
 import datetime
 import random
 import string
-from services.models import Service
-
 from django.core.exceptions import ValidationError
 
+class Service(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    duration = models.PositiveIntegerField(help_text="Duration in minutes", default=30)
+    active = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return self.name
 
 class Appointment(models.Model):
     STATUS_CHOICES = [

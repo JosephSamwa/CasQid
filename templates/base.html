@@ -241,30 +241,23 @@
             border-radius: 25px;
             font-weight: 600;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transform-origin: center;
-            animation: pulse 2s infinite;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             z-index: 1000;
         }
 
         .feedback-btn:hover {
-            animation: none;
             transform: scale(1.05);
             color: white;
         }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            }
-            50% {
-                transform: scale(1.05);
-                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            }
-            100% {
-                transform: scale(1);
-                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            }
+        
+        .feedback-btn.expanded {
+            transform: scale(1.15);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .feedback-btn.shrunk {
+            transform: scale(0.9);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
         }
 
         /* Star Rating in Modal */
@@ -569,8 +562,8 @@
             <button class="close-btn" id="closeBtn" aria-label="Close banner">×</button>
         </div>
     </div>
-    <!-- Feedback Button -->
-    <button type="button" class="feedback-btn" data-bs-toggle="modal" data-bs-target="#feedbackModal">
+       <!-- Feedback Button -->
+    <button type="button" class="feedback-btn" id="feedbackBtn" data-bs-toggle="modal" data-bs-target="#feedbackModal">
         <i class="fas fa-comment-dots me-2"></i>Share Your Feedback
     </button>
 
@@ -737,6 +730,67 @@
 
         closeBtn.addEventListener('click', hideTopBanner);
     </script>
+    <script>
+    // Add this to your existing JavaScript section or create a new one before the closing body tag
+    document.addEventListener('DOMContentLoaded', function() {
+        // Feedback button animation with custom timing
+        const feedbackBtn = document.getElementById('feedbackBtn');
+        let feedbackState = 'normal'; // Can be 'normal', 'expanded', or 'shrunk'
+        let feedbackTimeoutId;
+        
+        function animateFeedbackButton() {
+            switch(feedbackState) {
+                case 'normal':
+                    // From normal to expanded after 10 seconds
+                    feedbackBtn.classList.remove('shrunk');
+                    feedbackBtn.classList.add('expanded');
+                    feedbackState = 'expanded';
+                    feedbackTimeoutId = setTimeout(animateFeedbackButton, 3000); // Next state after 3 seconds
+                    break;
+                    
+                case 'expanded':
+                    // From expanded to shrunk after 3 seconds
+                    feedbackBtn.classList.remove('expanded');
+                    feedbackBtn.classList.add('shrunk');
+                    feedbackState = 'shrunk';
+                    feedbackTimeoutId = setTimeout(animateFeedbackButton, 3000); // Next state after 3 seconds
+                    break;
+                    
+                case 'shrunk':
+                    // From shrunk to normal, then wait 10 seconds before expanding again
+                    feedbackBtn.classList.remove('shrunk');
+                    feedbackBtn.classList.remove('expanded');
+                    feedbackState = 'normal';
+                    feedbackTimeoutId = setTimeout(animateFeedbackButton, 10000); // Next state after 10 seconds
+                    break;
+            }
+        }
+        
+        // Start the animation sequence
+        feedbackTimeoutId = setTimeout(animateFeedbackButton, 10000);
+        
+        // Pause animation on hover
+        feedbackBtn.addEventListener('mouseenter', function() {
+            clearTimeout(feedbackTimeoutId);
+            feedbackBtn.classList.remove('shrunk');
+            feedbackBtn.classList.add('expanded');
+        });
+        
+        // Resume animation when hover ends
+        feedbackBtn.addEventListener('mouseleave', function() {
+            clearTimeout(feedbackTimeoutId);
+            feedbackState = 'expanded';
+            feedbackTimeoutId = setTimeout(animateFeedbackButton, 3000);
+        });
+        
+        // Stop animation when modal is opened
+        feedbackBtn.addEventListener('click', function() {
+            clearTimeout(feedbackTimeoutId);
+            feedbackBtn.classList.remove('expanded');
+            feedbackBtn.classList.remove('shrunk');
+        });
+    });
+</script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
